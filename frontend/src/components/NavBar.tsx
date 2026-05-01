@@ -56,12 +56,12 @@ export default function NavBar() {
               key={path}
               to={path}
               style={{
-                padding: '0.6rem 1.1rem',
+                padding: '0.75rem 1.25rem',
                 whiteSpace: 'nowrap',
-                fontSize: '0.85rem',
-                color: active ? '#00b4d8' : 'rgba(255,255,255,0.55)',
-                borderBottom: active ? '2px solid #00b4d8' : '2px solid transparent',
-                fontWeight: active ? 600 : 400,
+                fontSize: '1rem',
+                color: active ? '#00b4d8' : 'rgba(255,255,255,0.7)',
+                borderBottom: active ? '3px solid #00b4d8' : '3px solid transparent',
+                fontWeight: active ? 700 : 400,
                 flexShrink: 0,
               }}
             >
