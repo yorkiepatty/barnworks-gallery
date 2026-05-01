@@ -1,21 +1,20 @@
 /**
  * AlphaVox Audio Service
  *
- * Handles voice synthesis playback with a priority chain:
- *   1. Backend /api/tts/synthesize  → ElevenLabs (highest quality, emotionally expressive)
- *   2. Browser SpeechSynthesis API  → fallback when backend is offline
+ * Priority chain for speaking:
+ *   1. Backend /api/tts/speak  → Amazon Polly (best quality) → gTTS fallback
+ *   2. Browser SpeechSynthesis → fallback when backend is offline or audio fails
  *
- * Voice quality matters enormously for AlphaVox users.
- * ElevenLabs gives us human-level naturalness — not robotic TTS.
+ * Voice is everything for AlphaVox users — this MUST always produce sound.
  */
 
 // ── User voice preference (persisted) ────────────────────────────────────────
 
 export interface VoicePrefs {
-  voiceName:  string;   // ElevenLabs voice name e.g. "Rachel"
-  voiceId?:   string;   // Custom/cloned voice ID (overrides voiceName)
-  speed:      number;   // 0.5 – 2.0
-  emotion?:   string;   // "warm" | "calm" | "excited" etc.
+  voiceName:  string;
+  voiceId?:   string;
+  speed:      number;
+  emotion?:   string;
   stability?: number;
   similarityBoost?: number;
 }
@@ -25,7 +24,7 @@ export function getVoicePrefs(): VoicePrefs {
   if (saved) {
     try { return JSON.parse(saved); } catch { /* fall through */ }
   }
-  return { voiceName: 'Bella', speed: 1.0, emotion: 'warm' };
+  return { voiceName: 'Matthew', speed: 1.0, emotion: 'warm' };
 }
 
 export function saveVoicePrefs(prefs: Partial<VoicePrefs>): void {
@@ -55,7 +54,6 @@ export interface SpeakOptions {
   voiceName?: string;
   voiceId?:   string;
   speed?:     number;
-  // ToneScore™ integration
   stability?:       number;
   similarityBoost?: number;
   style?:           number;
@@ -63,11 +61,7 @@ export interface SpeakOptions {
 
 /**
  * Speak text using the best available TTS provider.
- * Returns a promise that resolves when playback completes.
- */
-/**
- * Speak text via ElevenLabs only.
- * If the backend is unavailable, we stay silent — no robotic fallback, ever.
+ * Always produces sound — backend first, browser SpeechSynthesis as fallback.
  */
 export async function speakText(text: string, options: SpeakOptions = {}): Promise<void> {
   if (!text?.trim()) return;
@@ -77,7 +71,7 @@ export async function speakText(text: string, options: SpeakOptions = {}): Promi
   const prefs = getVoicePrefs();
   const merged: SpeakOptions = {
     emotion:         options.emotion         ?? prefs.emotion ?? 'warm',
-    voiceName:       options.voiceName       ?? prefs.voiceName ?? 'Bella',
+    voiceName:       options.voiceName       ?? prefs.voiceName ?? 'Matthew',
     voiceId:         options.voiceId         ?? prefs.voiceId,
     speed:           options.speed           ?? prefs.speed ?? 1.0,
     stability:       options.stability       ?? prefs.stability,
@@ -85,9 +79,27 @@ export async function speakText(text: string, options: SpeakOptions = {}): Promi
     style:           options.style,
   };
 
-  // ElevenLabs only — silence if unavailable
-  await _tryBackendTTS(text, merged);
+  // Try backend audio first
+  const ok = await _tryBackendTTS(text, merged);
+
+  // Always fall back to browser SpeechSynthesis if backend audio didn't play
+  if (!ok) {
+    _speakWithBrowser(text, merged.speed ?? 1.0);
+  }
 }
+
+// ── Browser SpeechSynthesis helper ───────────────────────────────────────────
+
+function _speakWithBrowser(text: string, rate = 1.0): void {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate  = rate;
+  utt.pitch = 1.0;
+  window.speechSynthesis.speak(utt);
+}
+
+// ── Backend TTS via fetch → Audio blob ───────────────────────────────────────
 
 async function _tryBackendTTS(text: string, opts: SpeakOptions): Promise<boolean> {
   try {
@@ -102,7 +114,7 @@ async function _tryBackendTTS(text: string, opts: SpeakOptions): Promise<boolean
     if (opts.similarityBoost) body.similarity_boost = opts.similarityBoost;
     if (opts.style)           body.style            = opts.style;
 
-    const response = await fetch('/api/tts/synthesize', {
+    const response = await fetch('/api/tts/speak', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(body),
@@ -112,6 +124,8 @@ async function _tryBackendTTS(text: string, opts: SpeakOptions): Promise<boolean
     if (!response.ok) return false;
 
     const blob  = await response.blob();
+    if (!blob.size) return false;
+
     const url   = URL.createObjectURL(blob);
     const audio = new Audio(url);
     activeAudio = audio;
@@ -120,7 +134,10 @@ async function _tryBackendTTS(text: string, opts: SpeakOptions): Promise<boolean
     return new Promise<boolean>((resolve) => {
       audio.onended  = () => { URL.revokeObjectURL(url); activeAudio = null; resolve(true); };
       audio.onerror  = () => { URL.revokeObjectURL(url); activeAudio = null; resolve(false); };
-      audio.play().catch(() => { URL.revokeObjectURL(url); activeAudio = null; resolve(false); });
+      // NOTE: do NOT revoke the URL in play().catch() — that causes a race condition
+      // where onerror fires after the URL is already revoked (ERR_FILE_NOT_FOUND).
+      // onerror handles cleanup.
+      audio.play().catch(() => { activeAudio = null; resolve(false); });
     });
   } catch {
     return false;

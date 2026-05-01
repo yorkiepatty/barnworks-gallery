@@ -1,4 +1,6 @@
-# AlphaVox Backend Dependencies
+# AlphaVox Backend Dependencies — slim build (EC2 19 GB volume)
+# Heavy ML libs (spacy, opencv, scipy, pandas, scikit-learn, numpy, trafilatura)
+# are excluded — they are unused by any active API endpoint and fill the disk.
 fastapi>=0.115.0
 uvicorn[standard]>=0.34.0
 pydantic>=2.10.0
@@ -9,17 +11,8 @@ sqlalchemy>=2.0.40
 psycopg2-binary>=2.9.10
 anthropic>=0.49.0
 boto3>=1.35.0
-numpy>=2.2.4
-pandas>=2.2.3
-scikit-learn>=1.6.1
-spacy>=3.8.5
-opencv-python>=4.11.0.86
-sounddevice>=0.5.1
-pygame>=2.6.1
 gtts>=2.5.4
-scipy>=1.15.2
 requests>=2.32.3
 beautifulsoup4>=4.13.4
-trafilatura>=2.0.0
 gunicorn>=23.0.0
 httpx>=0.28.0

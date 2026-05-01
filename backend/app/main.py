@@ -15,6 +15,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 # ── Environment ─────────────────────────────────────────────────────────────
 load_dotenv()
@@ -45,7 +47,7 @@ app = FastAPI(
 # Allow the Vite dev server (port 5173) and production origin
 ALLOWED_ORIGINS = os.getenv(
     "CORS_ORIGINS",
-    "http://localhost:5173,http://localhost:3000",
+    "http://localhost:5173,http://localhost:3000,https://thechristmanaiproject.com,https://www.thechristmanaiproject.com,https://alphavox.thechristmanaiproject.com",
 ).split(",")
 
 app.add_middleware(
@@ -67,8 +69,24 @@ app.include_router(memory_router.router, prefix="/api/memory", tags=["memory"])
 
 app.add_middleware(ComplianceMiddleware)
 
-logger.info("🚀 AlphaVox API ready")
-logger.info("🏥 HIPAA/FDA compliance middleware active")
+logger.info("AlphaVox API ready")
+logger.info("HIPAA/FDA compliance middleware active")
+
+# Serve React frontend — must be after all API routers
+FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+if FRONTEND_DIST.exists():
+    app.mount("/assets", StaticFiles(directory=FRONTEND_DIST / "assets"), name="assets")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_root():
+        return FileResponse(str(FRONTEND_DIST / "index.html"))
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        index = FRONTEND_DIST / "index.html"
+        return FileResponse(str(index))
+else:
+    logger.warning("Frontend dist not found at %s — UI will not be served", FRONTEND_DIST)
 
 
 if __name__ == "__main__":

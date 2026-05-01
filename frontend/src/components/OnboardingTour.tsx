@@ -4,7 +4,7 @@
  * Introduces AlphaVox as an autonomous being — not "AI."
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faThLarge, faHandPaper, faEye, faVolumeUp, faChartLine,
@@ -132,6 +132,15 @@ export default function OnboardingTour({ onClose }: Props) {
       window.speechSynthesis.speak(utt);
     }
   };
+
+  // Speak step 1 automatically when the tour opens
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const t = setTimeout(() => {
+      speak(STEPS[0].title + '. ' + STEPS[0].body.split('\n')[0]);
+    }, 450);
+    return () => clearTimeout(t);
+  }, []); // only on mount
 
   const goTo = (idx: number) => {
     setStep(idx);

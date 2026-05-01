@@ -7,7 +7,7 @@ import {
   faGamepad, faMusic, faBook, faLeaf,
   faPaperPlane, faVolumeUp, faTrash, faPlusCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { synthesizeTTS } from '../services/api';
+import { speakText } from '../services/audio';
 
 interface SymbolItem {
   id: string;
@@ -62,13 +62,8 @@ export default function Symbols() {
   const speakPhrase = useCallback(async (phrase: string, id: string) => {
     setSpeaking(id);
     try {
-      await synthesizeTTS({ text: phrase });
-    } catch {
-      // Fallback: browser TTS
-      if ('speechSynthesis' in window) {
-        const utt = new SpeechSynthesisUtterance(phrase);
-        window.speechSynthesis.speak(utt);
-      }
+      // speakText tries backend audio first, then falls back to browser TTS automatically
+      await speakText(phrase, { emotion: 'warm' });
     } finally {
       setTimeout(() => setSpeaking(null), 1500);
     }
