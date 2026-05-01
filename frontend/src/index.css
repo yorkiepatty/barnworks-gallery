@@ -196,6 +196,15 @@ a:hover { color: var(--accent-color); }
 .btn-success-cyber:hover { background: rgba(46, 196, 182, 0.12); }
 .btn-warning-cyber { border-color: var(--warning-color); color: var(--warning-color); }
 .btn-warning-cyber:hover { background: rgba(249, 199, 79, 0.12); }
+/* ── Behavior tag selected state ─────────────────────────────── */
+.tag-btn-selected {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 10px var(--primary-color), 0 0 4px var(--primary-color) !important;
+}
+.tag-btn-selected:hover { background: var(--secondary-color) !important; border-color: var(--secondary-color) !important; }
 
 /* ── Inputs ─────────────────────────────────────────────────── */
 .cyber-input {

@@ -472,10 +472,10 @@ export default function BehaviorCapture() {
                   {BEHAVIOR_TAGS.map(tag => (
                     <button
                       key={tag}
-                      className={selectedTags.includes(tag) ? 'neural-btn' : 'cyber-btn'}
+                      type="button"
+                      className={selectedTags.includes(tag) ? 'cyber-btn tag-btn-selected' : 'cyber-btn'}
                       style={{ padding: '0.2rem 0.65rem', fontSize: '0.75rem', fontFamily: 'Share Tech Mono, monospace', letterSpacing: '0.06em' }}
                       onClick={() => toggleTag(tag)}
-                      disabled={recording}
                     >
                       {tag}
                     </button>
