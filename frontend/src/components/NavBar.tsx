@@ -28,7 +28,7 @@ export default function NavBar() {
         </Link>
 
         {/* Desktop links — hidden on mobile via CSS */}
-        <div className="nav-desktop" style={s.links}>
+        <div className="nav-desktop">
           {NAV_ITEMS.map(({ label, path }) => {
             const active = location.pathname === path
             return (
