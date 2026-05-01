@@ -136,15 +136,15 @@ export default function OnboardingTour({ onClose }: Props) {
   // Tour is always opened by a user gesture so audio is allowed.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const first = STEPS[0].body.split('\n').find(l => l.trim()) ?? '';
-    speak(STEPS[0].title + '. ' + first);
+    const bodyText = STEPS[0].body.replace(/\n+/g, ' ').trim();
+    speak(STEPS[0].title + '. ' + bodyText);
     return () => stopSpeaking(); // stop if tour is closed mid-speech
   }, []); // only on mount
 
   const goTo = (idx: number) => {
     setStep(idx);
-    const firstLine = STEPS[idx].body.split('\n').find(l => l.trim()) ?? '';
-    speak(STEPS[idx].title + '. ' + firstLine);
+    const bodyText = STEPS[idx].body.replace(/\n+/g, ' ').trim();
+    speak(STEPS[idx].title + '. ' + bodyText);
   };
 
   return (

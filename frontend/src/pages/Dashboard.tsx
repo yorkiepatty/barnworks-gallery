@@ -215,25 +215,50 @@ export default function Dashboard() {
   }, [handsFree]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Greeting on first mount ───────────────────────────────────
-  // React 18 StrictMode double-mounts effects in dev; the clearTimeout return
-  // handles cleanup so we do NOT need a ref guard — second mount is the real one.
+  // Browsers block audio autoplay on fresh page load until the user has interacted.
+  // trySpeak (timer): shows message + attempts audio — does NOT mark spoken or
+  //   remove the listener, so the interaction path can still fire later.
+  // doSpeak (gesture): marks spoken + removes listener, then plays with gesture ctx.
   useEffect(() => {
     const greeting = buildGreeting(user.name, isNew);
+    let spoken = false;
+    let msgShown = false;
 
-    const timer = setTimeout(async () => {
+    const showMsg = () => {
+      if (msgShown) return;
+      msgShown = true;
       setMessages([{ role: 'alpha', text: greeting }]);
-      await speakText(greeting, { emotion: 'warm' });
-
-      // Mark visited
       localStorage.setItem(visitedKey, 'true');
+    };
 
-      // Show onboarding tour for genuinely new users
+    // Timer path: silent attempt — leaves listener active for gesture fallback
+    const trySpeak = () => {
+      showMsg();
+      speakText(greeting, { emotion: 'warm' });
+    };
+
+    // Gesture path: guaranteed to work — marks spoken so it only fires once
+    const doSpeak = () => {
+      if (spoken) return;
+      spoken = true;
+      document.removeEventListener('pointerdown', doSpeak);
+      document.removeEventListener('keydown', doSpeak);
+      showMsg();
+      speakText(greeting, { emotion: 'warm' });
       if (isNew && !localStorage.getItem(tourKey)) {
-        setTimeout(() => setShowTour(true), 1800);
+        setTimeout(() => setShowTour(true), 2400);
       }
-    }, 600);
+    };
 
-    return () => clearTimeout(timer);
+    const timer = setTimeout(trySpeak, 600);
+    document.addEventListener('pointerdown', doSpeak, { once: true });
+    document.addEventListener('keydown', doSpeak, { once: true });
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('pointerdown', doSpeak);
+      document.removeEventListener('keydown', doSpeak);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
