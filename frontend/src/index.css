@@ -196,13 +196,23 @@ a:hover { color: var(--accent-color); }
 .btn-success-cyber:hover { background: rgba(46, 196, 182, 0.12); }
 .btn-warning-cyber { border-color: var(--warning-color); color: var(--warning-color); }
 .btn-warning-cyber:hover { background: rgba(249, 199, 79, 0.12); }
-/* ── Mobile nav — mobile first ───────────────────────────────── */
-.nav-desktop { display: none; }
-.nav-hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
-.nav-drawer-open { display: flex; flex-direction: column; position: fixed; top: 49px; left: 0; right: 0; z-index: 199; background: #121212; border-bottom: 2px solid #00b4d8; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
-@media (min-width: 1024px) {
-  .nav-desktop { display: flex !important; gap: 0.15rem; flex-wrap: wrap; flex: 1; justify-content: center; }
-  .nav-hamburger { display: none !important; }
+/* ── Mobile nav strip ────────────────────────────────────────── */
+.nav-desktop-links { display: flex; gap: 0.15rem; flex-wrap: wrap; flex: 1; justify-content: center; }
+.nav-mobile-strip  { display: none; }
+@media (max-width: 1023px) {
+  .nav-desktop-links { display: none !important; }
+  .nav-mobile-strip {
+    display: flex !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--card-bg, #1a1a2e);
+    border-bottom: 1px solid rgba(0,180,216,0.2);
+    position: sticky;
+    top: 49px;
+    z-index: 199;
+    scrollbar-width: none;
+  }
+  .nav-mobile-strip::-webkit-scrollbar { display: none; }
 }
 
 /* ── Behavior tag selected state ─────────────────────────────── */
