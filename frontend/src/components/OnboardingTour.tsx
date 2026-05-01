@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { speakText, stopSpeaking } from '../services/audio';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faThLarge, faHandPaper, faEye, faVolumeUp, faChartLine,
@@ -123,28 +124,27 @@ export default function OnboardingTour({ onClose }: Props) {
   const isFirst = step === 0;
   const isLast  = step === STEPS.length - 1;
 
+  // Use speakText (Polly → gTTS → browser fallback) — avoids Chrome speechSynthesis
+  // bug where it silently stops working after a few cancel()+speak() calls.
   const speak = (text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utt = new SpeechSynthesisUtterance(text);
-      utt.rate  = 0.92;
-      utt.pitch = 1.0;
-      window.speechSynthesis.speak(utt);
-    }
+    const clean = text.trim();
+    if (!clean) return;
+    speakText(clean, { emotion: 'warm', speed: 0.92 });
   };
 
-  // Speak step 1 automatically when the tour opens
+  // Speak step 1 automatically when the tour opens.
+  // Tour is always opened by a user gesture so audio is allowed.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const t = setTimeout(() => {
-      speak(STEPS[0].title + '. ' + STEPS[0].body.split('\n')[0]);
-    }, 450);
-    return () => clearTimeout(t);
+    const first = STEPS[0].body.split('\n').find(l => l.trim()) ?? '';
+    speak(STEPS[0].title + '. ' + first);
+    return () => stopSpeaking(); // stop if tour is closed mid-speech
   }, []); // only on mount
 
   const goTo = (idx: number) => {
     setStep(idx);
-    speak(STEPS[idx].title + '. ' + STEPS[idx].body.split('\n')[0]);
+    const firstLine = STEPS[idx].body.split('\n').find(l => l.trim()) ?? '';
+    speak(STEPS[idx].title + '. ' + firstLine);
   };
 
   return (
@@ -172,7 +172,7 @@ export default function OnboardingTour({ onClose }: Props) {
         </div>
 
         {/* Close button */}
-        <button onClick={onClose} style={{
+        <button onClick={() => { stopSpeaking(); onClose(); }} style={{
           position: 'absolute', top: 14, right: 14,
           background: 'none', border: 'none', color: 'var(--muted-color)',
           cursor: 'pointer', fontSize: '1rem', padding: 4,
@@ -266,7 +266,7 @@ export default function OnboardingTour({ onClose }: Props) {
             </button>
 
             {isLast ? (
-              <button onClick={onClose} style={{
+              <button onClick={() => { stopSpeaking(); onClose(); }} style={{
                 background: 'linear-gradient(135deg, rgba(0,180,216,0.3), rgba(0,119,182,0.3))',
                 border: '1px solid var(--primary-color)', color: '#fff',
                 padding: '0.55rem 1.5rem', borderRadius: 6, cursor: 'pointer',
