@@ -16,67 +16,60 @@ export default function NavBar() {
   const user      = localStorage.getItem('alphavox_user')
 
   return (
-    <>
-      {/* ── Top bar ── */}
-      <nav style={{
+    <div style={{ position: 'sticky', top: 0, zIndex: 200 }}>
+      {/* Top bar */}
+      <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0.6rem 1.25rem',
-        background: 'var(--card-bg, #1a1a2e)',
-        borderBottom: '1px solid var(--border-color, rgba(0,180,216,0.25))',
-        position: 'sticky', top: 0, zIndex: 200,
+        background: '#111827',
+        borderBottom: '1px solid rgba(0,180,216,0.2)',
       }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '1rem', fontWeight: 700, color: '#00b4d8', whiteSpace: 'nowrap' }}>
-          ⚡ AlphaVox <span style={{ fontSize: '0.7rem', opacity: 0.6 }}>V2.5</span>
+        <Link to="/" style={{ fontWeight: 700, fontSize: '1rem', color: '#00b4d8', whiteSpace: 'nowrap' }}>
+          ⚡ AlphaVox
         </Link>
-
-        {/* Desktop links — hidden on mobile */}
-        <div className="nav-desktop-links">
-          {NAV_ITEMS.map(({ label, path }) => {
-            const active = location.pathname === path
-            return (
-              <Link key={path} to={path} style={{
-                padding: '0.3rem 0.6rem', borderRadius: '0.3rem', fontSize: '0.8rem',
-                color: active ? '#00b4d8' : 'rgba(255,255,255,0.5)',
-                background: active ? 'rgba(0,180,216,0.12)' : 'transparent',
-                whiteSpace: 'nowrap',
-              }}>
-                {label}
-              </Link>
-            )
-          })}
-        </div>
-
         {user ? (
           <button onClick={() => { localStorage.removeItem('alphavox_user'); navigate('/') }} style={{
             padding: '0.3rem 0.7rem', borderRadius: '0.3rem', background: 'transparent',
-            border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)',
-            cursor: 'pointer', fontSize: '0.8rem', whiteSpace: 'nowrap',
+            border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.6)',
+            cursor: 'pointer', fontSize: '0.8rem',
           }}>
             {user} ×
           </button>
         ) : (
           <Link to="/" style={{ padding: '0.3rem 0.8rem', borderRadius: '0.3rem', background: '#00b4d8', color: '#000', fontWeight: 700, fontSize: '0.8rem' }}>INIT</Link>
         )}
-      </nav>
+      </div>
 
-      {/* ── Mobile scrollable nav strip — visible only on small screens ── */}
-      <div className="nav-mobile-strip">
+      {/* Nav links — always visible, scrollable on mobile */}
+      <div style={{
+        display: 'flex',
+        overflowX: 'auto',
+        background: '#0f172a',
+        borderBottom: '1px solid rgba(0,180,216,0.15)',
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none',
+      }}>
         {NAV_ITEMS.map(({ label, path }) => {
           const active = location.pathname === path
           return (
-            <Link key={path} to={path} style={{
-              padding: '0.5rem 1rem',
-              fontSize: '0.85rem',
-              whiteSpace: 'nowrap',
-              color: active ? '#00b4d8' : 'rgba(255,255,255,0.6)',
-              borderBottom: active ? '2px solid #00b4d8' : '2px solid transparent',
-              fontWeight: active ? 600 : 400,
-            }}>
+            <Link
+              key={path}
+              to={path}
+              style={{
+                padding: '0.6rem 1.1rem',
+                whiteSpace: 'nowrap',
+                fontSize: '0.85rem',
+                color: active ? '#00b4d8' : 'rgba(255,255,255,0.55)',
+                borderBottom: active ? '2px solid #00b4d8' : '2px solid transparent',
+                fontWeight: active ? 600 : 400,
+                flexShrink: 0,
+              }}
+            >
               {label}
             </Link>
           )
         })}
       </div>
-    </>
+    </div>
   )
 }
