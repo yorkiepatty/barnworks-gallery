@@ -196,14 +196,13 @@ a:hover { color: var(--accent-color); }
 .btn-success-cyber:hover { background: rgba(46, 196, 182, 0.12); }
 .btn-warning-cyber { border-color: var(--warning-color); color: var(--warning-color); }
 .btn-warning-cyber:hover { background: rgba(249, 199, 79, 0.12); }
-/* ── Mobile nav ──────────────────────────────────────────────── */
-.nav-desktop { display: flex; }
-.nav-hamburger { display: none; }
-.nav-drawer { display: none; }
-@media (max-width: 767px) {
-  .nav-desktop { display: none !important; }
-  .nav-hamburger { display: flex !important; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 6px; }
-  .nav-drawer-open { display: flex !important; flex-direction: column; position: fixed; top: 49px; left: 0; right: 0; z-index: 199; background: var(--surface, #0d1117); border-bottom: 1px solid var(--border, #30363d); }
+/* ── Mobile nav — mobile first ───────────────────────────────── */
+.nav-desktop { display: none; }
+.nav-hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
+.nav-drawer-open { display: flex; flex-direction: column; position: fixed; top: 49px; left: 0; right: 0; z-index: 199; background: var(--surface, #0d1117); border-bottom: 1px solid var(--border, #30363d); }
+@media (min-width: 1024px) {
+  .nav-desktop { display: flex !important; }
+  .nav-hamburger { display: none !important; }
 }
 
 /* ── Behavior tag selected state ─────────────────────────────── */
