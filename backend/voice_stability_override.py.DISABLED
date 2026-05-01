@@ -1,0 +1,32 @@
+"""
+Voice Stability Override - Fallback module to prevent import errors
+This is a minimal implementation to satisfy import requirements
+"""
+
+# Simple fallback constant
+VOICE_OVERRIDE = {
+    "enabled": False,
+    "status": "fallback_mode",
+    "message": "Voice stability override is disabled"
+}
+
+def get_voice_override():
+    """Return the voice override configuration"""
+    return VOICE_OVERRIDE
+
+def enable_voice_override():
+    """Enable voice override (fallback implementation)"""
+    global VOICE_OVERRIDE
+    VOICE_OVERRIDE["enabled"] = True
+    VOICE_OVERRIDE["status"] = "enabled"
+    return True
+
+def disable_voice_override():
+    """Disable voice override"""
+    global VOICE_OVERRIDE
+    VOICE_OVERRIDE["enabled"] = False
+    VOICE_OVERRIDE["status"] = "disabled"
+    return True
+
+# Default export for compatibility
+__all__ = ['VOICE_OVERRIDE', 'get_voice_override', 'enable_voice_override', 'disable_voice_override']

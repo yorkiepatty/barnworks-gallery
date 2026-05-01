@@ -1,0 +1,96 @@
+# ============================================================
+#  AlphaVox — docker-compose
+#  The Christman AI Project / Luma Cognify AI
+#
+#  LOCAL DEV:   docker compose up
+#  PRODUCTION:  Uses AWS RDS (set DATABASE_URL in .env)
+#               Uses AWS Polly (set AWS_* keys in .env)
+#               Uses Ollama (set OLLAMA_URL in .env)
+# ============================================================
+
+version: "3.9"
+
+services:
+
+  # ── AlphaVox Backend + Frontend ───────────────────────────
+  alphavox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alphavox
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Override for local dev if needed
+      ALPHAVOX_HOST: "0.0.0.0"
+      ALPHAVOX_PORT: "8000"
+    volumes:
+      # Persist HIPAA audit logs and encryption key outside container
+      - alphavox_hipaa:/app/hipaa_secure
+      - alphavox_logs:/app/logs
+    depends_on:
+      - ollama
+    networks:
+      - alphavox_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── Ollama — Local AI (Qwen2.5) ───────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - alphavox_net
+    # Pull the model on first start
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama serve &
+        sleep 5
+        ollama pull qwen2.5:1.5b
+        wait
+
+  # ── Local PostgreSQL (DEV ONLY — use RDS in production) ───
+  # Comment this out when DATABASE_URL points to RDS
+  postgres:
+    image: postgres:16-alpine
+    container_name: alphavox_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: alphavox
+      POSTGRES_USER: alphavox_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme_in_env}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - alphavox_net
+    profiles:
+      - local  # only starts with: docker compose --profile local up
+
+volumes:
+  alphavox_hipaa:
+    driver: local
+  alphavox_logs:
+    driver: local
+  ollama_models:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  alphavox_net:
+    driver: bridge

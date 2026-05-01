@@ -1,0 +1,295 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Analytics | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="card bg-dark text-white mb-4 cyber-card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>Learning Analytics
+                        </h3>
+                        <a href="/learning/" class="btn btn-outline-secondary cyber-btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Track your learning progress, view insights, and analyze your communication development journey.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Learning Overview Stats -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-dark text-white h-100 cyber-card border-primary">
+                <div class="card-body text-center">
+                    <div class="my-3">
+                        <i class="fas fa-trophy fa-3x text-primary"></i>
+                    </div>
+                    <h2 class="text-primary">15</h2>
+                    <h5>Topics Completed</h5>
+                    <p class="small text-muted">Total learning modules finished</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-dark text-white h-100 cyber-card border-success">
+                <div class="card-body text-center">
+                    <div class="my-3">
+                        <i class="fas fa-clock fa-3x text-success"></i>
+                    </div>
+                    <h2 class="text-success">24.5h</h2>
+                    <h5>Learning Time</h5>
+                    <p class="small text-muted">Total time spent learning</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-dark text-white h-100 cyber-card border-info">
+                <div class="card-body text-center">
+                    <div class="my-3">
+                        <i class="fas fa-fire fa-3x text-info"></i>
+                    </div>
+                    <h2 class="text-info">7</h2>
+                    <h5>Day Streak</h5>
+                    <p class="small text-muted">Consecutive days of learning</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-dark text-white h-100 cyber-card border-warning">
+                <div class="card-body text-center">
+                    <div class="my-3">
+                        <i class="fas fa-target fa-3x text-warning"></i>
+                    </div>
+                    <h2 class="text-warning">89%</h2>
+                    <h5>Goal Progress</h5>
+                    <p class="small text-muted">Weekly learning goal completion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <!-- Progress Chart -->
+        <div class="col-lg-8">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-line-chart me-2"></i>Learning Progress Over Time
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                    <div class="mt-3">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="border-end border-secondary">
+                                    <h5 class="text-primary mb-0">42</h5>
+                                    <small class="text-muted">Topics This Month</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border-end border-secondary">
+                                    <h5 class="text-success mb-0">156</h5>
+                                    <small class="text-muted">Sessions Completed</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h5 class="text-info mb-0">94%</h5>
+                                <small class="text-muted">Average Score</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-lg-4">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Activity
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="activity-feed" style="max-height: 300px; overflow-y: auto;">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="rounded-circle bg-success d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-check text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Completed "Nonverbal Communication"</h6>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-star text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Reached 7-day streak</h6>
+                                <small class="text-muted">Yesterday</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-book text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Started "Voice Synthesis Basics"</h6>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-medal text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Earned "Quick Learner" badge</h6>
+                                <small class="text-muted">3 days ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <!-- Learning Categories Breakdown -->
+        <div class="col-lg-6">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-pie-chart me-2"></i>Learning Categories
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Assessment -->
+        <div class="col-lg-6">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-skills me-2"></i>Skills Assessment
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Communication</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-primary" style="width: 85%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Technology Usage</span>
+                            <span>92%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" style="width: 92%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Voice Synthesis</span>
+                            <span>78%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" style="width: 78%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Learning Strategies</span>
+                            <span>89%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" style="width: 89%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary cyber-btn">
+                            <i class="fas fa-brain me-1"></i>Take Skills Assessment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-body text-center">
+                    <h5>Ready to continue learning?</h5>
+                    <div class="mt-3">
+                        <a href="/learning/sessions" class="btn btn-primary cyber-btn me-2">
+                            <i class="fas fa-play me-1"></i>Start New Session
+                        </a>
+                        <a href="/learning/milestones" class="btn btn-success cyber-btn me-2">
+                            <i class="fas fa-flag me-1"></i>View Milestones
+                        </a>
+                        <a href="/learning/journey" class="btn btn-info cyber-btn">
+                            <i class="fas fa-route me-1"></i>Learning Journey
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Basic chart setup - in a real implementation, you would use Chart.js or similar
+document.addEventListener('DOMContentLoaded', function() {
+    // Placeholder for chart initialization
+    console.log('Learning Analytics page loaded');
+
+    // Example: If Chart.js is loaded, initialize charts here
+    // const progressCtx = document.getElementById('progressChart');
+    // const categoryCtx = document.getElementById('categoryChart');
+});
+</script>
+{% endblock %}

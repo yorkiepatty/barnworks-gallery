@@ -1,0 +1,10 @@
+assert_used:
+  skips: []
+exclude_dirs:
+  - tests
+  - .venv
+  - venv
+  - node_modules
+  - dist
+  - build
+  - brand

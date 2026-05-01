@@ -1,0 +1,492 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Milestones | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="card bg-dark text-white mb-4 cyber-card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-flag-checkered me-2"></i>Learning Milestones
+                        </h3>
+                        <a href="/learning/" class="btn btn-outline-secondary cyber-btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Hub
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Track your learning achievements, celebrate your progress, and see what's coming next on your journey.
+                    </p>
+
+                    <!-- Progress Overview -->
+                    <div class="row text-center mt-4">
+                        <div class="col-md-3">
+                            <h2 class="text-success">12</h2>
+                            <p class="mb-0">Milestones Achieved</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h2 class="text-primary">3</h2>
+                            <p class="mb-0">In Progress</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h2 class="text-info">8</h2>
+                            <p class="mb-0">Upcoming</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h2 class="text-warning">75%</h2>
+                            <p class="mb-0">Overall Progress</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Current Milestones -->
+        <div class="col-lg-8">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-target me-2"></i>Your Learning Journey
+                    </h4>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary cyber-btn-sm active" onclick="showAll()">All</button>
+                        <button type="button" class="btn btn-outline-success cyber-btn-sm" onclick="showCompleted()">Completed</button>
+                        <button type="button" class="btn btn-outline-info cyber-btn-sm" onclick="showInProgress()">In Progress</button>
+                        <button type="button" class="btn btn-outline-warning cyber-btn-sm" onclick="showUpcoming()">Upcoming</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Milestone Timeline -->
+                    <div class="milestone-timeline">
+
+                        <!-- Completed Milestone -->
+                        <div class="milestone-item completed" data-category="completed">
+                            <div class="milestone-marker bg-success">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div class="milestone-content">
+                                <div class="card bg-success bg-gradient mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="mb-1">
+                                                    <i class="fas fa-trophy me-2"></i>Communication Fundamentals
+                                                </h5>
+                                                <p class="mb-2">Master the basics of effective communication techniques</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-white" style="width: 100%;"></div>
+                                                </div>
+                                                <small>Completed 3 days ago • 100% Complete</small>
+                                            </div>
+                                            <div class="badge bg-warning">
+                                                <i class="fas fa-star"></i> Gold
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- In Progress Milestone -->
+                        <div class="milestone-item in-progress" data-category="in-progress">
+                            <div class="milestone-marker bg-primary">
+                                <i class="fas fa-play text-white"></i>
+                            </div>
+                            <div class="milestone-content">
+                                <div class="card bg-dark border-primary mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="mb-1">
+                                                    <i class="fas fa-microphone me-2"></i>Voice Synthesis Mastery
+                                                </h5>
+                                                <p class="mb-2">Learn advanced voice synthesis and customization techniques</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" style="width: 65%;"></div>
+                                                </div>
+                                                <small>Started 1 week ago • 65% Complete • 3 tasks remaining</small>
+                                            </div>
+                                            <button class="btn btn-primary cyber-btn-sm" onclick="continueProgress(2)">
+                                                <i class="fas fa-arrow-right"></i> Continue
+                                            </button>
+                                        </div>
+
+                                        <!-- Sub-tasks -->
+                                        <div class="mt-3">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span class="text-decoration-line-through">Voice Parameter Basics</span>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span class="text-decoration-line-through">Emotional Tone Control</span>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="fas fa-circle text-primary me-2"></i>
+                                                <span>Advanced Modulation</span>
+                                                <span class="badge bg-primary ms-auto">In Progress</span>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="fas fa-circle text-muted me-2"></i>
+                                                <span class="text-muted">Voice Personalization</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-circle text-muted me-2"></i>
+                                                <span class="text-muted">Final Assessment</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Milestone -->
+                        <div class="milestone-item upcoming" data-category="upcoming">
+                            <div class="milestone-marker bg-secondary">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div class="milestone-content">
+                                <div class="card bg-dark border-secondary mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="mb-1">
+                                                    <i class="fas fa-users me-2"></i>Advanced Social Communication
+                                                </h5>
+                                                <p class="mb-2">Master complex social interactions and group communication</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-secondary" style="width: 0%;"></div>
+                                                </div>
+                                                <small class="text-muted">Unlocks after Voice Synthesis Mastery</small>
+                                            </div>
+                                            <button class="btn btn-outline-secondary cyber-btn-sm" disabled>
+                                                <i class="fas fa-lock"></i> Locked
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Another Completed Milestone -->
+                        <div class="milestone-item completed" data-category="completed">
+                            <div class="milestone-marker bg-success">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div class="milestone-content">
+                                <div class="card bg-dark border-success mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="mb-1">
+                                                    <i class="fas fa-cog me-2"></i>Technology Integration Basics
+                                                </h5>
+                                                <p class="mb-2">Learn to integrate assistive technology into daily communication</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" style="width: 100%;"></div>
+                                                </div>
+                                                <small>Completed 1 week ago • 100% Complete</small>
+                                            </div>
+                                            <div class="badge bg-info">
+                                                <i class="fas fa-medal"></i> Silver
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Another Upcoming Milestone -->
+                        <div class="milestone-item upcoming" data-category="upcoming">
+                            <div class="milestone-marker bg-secondary">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div class="milestone-content">
+                                <div class="card bg-dark border-secondary mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="mb-1">
+                                                    <i class="fas fa-brain me-2"></i>AI Communication Partner
+                                                </h5>
+                                                <p class="mb-2">Learn to effectively communicate and collaborate with AI systems</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-secondary" style="width: 0%;"></div>
+                                                </div>
+                                                <small class="text-muted">Unlocks after Advanced Social Communication</small>
+                                            </div>
+                                            <button class="btn btn-outline-secondary cyber-btn-sm" disabled>
+                                                <i class="fas fa-lock"></i> Locked
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestone Statistics & Achievements -->
+        <div class="col-lg-4">
+            <!-- Achievement Badges -->
+            <div class="card bg-dark text-white cyber-card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-trophy me-2"></i>Achievements
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 text-center">
+                        <div class="col-6">
+                            <div class="achievement-badge earned">
+                                <i class="fas fa-medal fa-2x text-warning"></i>
+                                <h6 class="mt-2 mb-0">First Steps</h6>
+                                <small class="text-muted">Complete first milestone</small>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="achievement-badge earned">
+                                <i class="fas fa-fire fa-2x text-danger"></i>
+                                <h6 class="mt-2 mb-0">On Fire</h6>
+                                <small class="text-muted">3 milestones in a week</small>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="achievement-badge earned">
+                                <i class="fas fa-star fa-2x text-primary"></i>
+                                <h6 class="mt-2 mb-0">Rising Star</h6>
+                                <small class="text-muted">5 milestones completed</small>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="achievement-badge locked">
+                                <i class="fas fa-crown fa-2x text-muted"></i>
+                                <h6 class="mt-2 mb-0">Expert</h6>
+                                <small class="text-muted">15 milestones (3 more)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Milestone -->
+            <div class="card bg-dark text-white cyber-card mb-4 border-primary">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-bullseye me-2"></i>Next Goal
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h5>Complete Voice Synthesis Mastery</h5>
+                    <p class="text-muted">You're 65% of the way there! Just 3 more tasks to complete this milestone.</p>
+
+                    <div class="progress mb-3" style="height: 12px;">
+                        <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" style="width: 65%;"></div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button class="btn btn-primary cyber-btn" onclick="continueProgress(2)">
+                            <i class="fas fa-play me-1"></i>Continue Learning
+                        </button>
+                    </div>
+
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            Estimated time to completion: 2-3 hours
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestone Calendar -->
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar me-2"></i>Recent Activity
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="timeline-small">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Communication Fundamentals</h6>
+                                <small class="text-muted">Completed 3 days ago</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Started Advanced Modulation</h6>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-info"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">Earned "Rising Star" badge</h6>
+                                <small class="text-muted">1 week ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.milestone-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.milestone-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #6c757d;
+}
+
+.milestone-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.milestone-marker {
+    position: absolute;
+    left: -22px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #212529;
+}
+
+.milestone-content {
+    margin-left: 20px;
+}
+
+.achievement-badge.earned {
+    opacity: 1;
+}
+
+.achievement-badge.locked {
+    opacity: 0.4;
+}
+
+.timeline-small {
+    position: relative;
+    padding-left: 25px;
+}
+
+.timeline-small::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #495057;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -15px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid #212529;
+}
+
+.timeline-content {
+    margin-left: 15px;
+}
+</style>
+
+<script>
+function showAll() {
+    document.querySelectorAll('.milestone-item').forEach(item => {
+        item.style.display = 'block';
+    });
+    updateActiveButton(event.target);
+}
+
+function showCompleted() {
+    document.querySelectorAll('.milestone-item').forEach(item => {
+        if (item.dataset.category === 'completed') {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    updateActiveButton(event.target);
+}
+
+function showInProgress() {
+    document.querySelectorAll('.milestone-item').forEach(item => {
+        if (item.dataset.category === 'in-progress') {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    updateActiveButton(event.target);
+}
+
+function showUpcoming() {
+    document.querySelectorAll('.milestone-item').forEach(item => {
+        if (item.dataset.category === 'upcoming') {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    updateActiveButton(event.target);
+}
+
+function updateActiveButton(clickedButton) {
+    document.querySelectorAll('.btn-group button').forEach(btn => btn.classList.remove('active'));
+    clickedButton.classList.add('active');
+}
+
+function continueProgress(milestoneId) {
+    console.log('Continuing progress for milestone:', milestoneId);
+    alert('Redirecting to continue your learning progress...');
+    // In a real implementation, this would redirect to the appropriate learning module
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Learning Milestones page loaded');
+});
+</script>
+{% endblock %}

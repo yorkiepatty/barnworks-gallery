@@ -1,0 +1,25 @@
+# Never put these in Docker images
+.env
+*.key
+hipaa_secure/
+audit-logs/
+phi-backups/
+encryption-keys/
+*.p12
+*.pfx
+access_keys.json
+
+# Dev artifacts
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.git/
+backups/
+*.bak
+*.log
+
+# Docs/tools not needed in image
+docs/
+demo/

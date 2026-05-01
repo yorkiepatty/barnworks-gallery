@@ -1,0 +1,8 @@
+{
+  "primary_provider": "aws_polly",
+  "fallback_provider": "basic_print",
+  "default_voice": "Matthew",
+  "default_emotion": "neutral",
+  "max_queue_size": 10,
+  "voice_timeout": 30
+}

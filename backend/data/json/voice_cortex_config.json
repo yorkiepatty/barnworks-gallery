@@ -1,0 +1,9 @@
+{
+  "primary_provider": "advanced_tts_service",
+  "fallback_provider": "tts_bridge",
+  "default_voice": "Matthew",
+  "default_emotion": "neutral",
+  "max_queue_size": 10,
+  "voice_timeout": 30,
+  "debug_mode": true
+}

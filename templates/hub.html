@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaVox Learning Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .topic-card:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <!-- Header -->
+        <header class="text-center mb-4" role="banner">
+            <h1 class="display-4" aria-label="Welcome to your Learning Hub">Welcome to Your Learning Hub</h1>
+            <p class="lead">Explore topics, track your progress, and grow with AlphaVox!</p>
+        </header>
+
+        <!-- Progress Overview -->
+        <section aria-labelledby="progress-heading">
+            <h2 id="progress-heading" class="mb-3">Your Learning Progress</h2>
+            <div class="card p-4 mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Topics Explored:</strong> {{ stats.topic_progress | length }}</p>
+                        <p><strong>Facts Learned:</strong> {{ stats.fact_mastery | length }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="progress mb-3" role="progressbar" aria-label="Overall Progress">
+                            <div class="progress-bar bg-success" style="width: {{ stats.overall_progress | default(0) * 100 }}%">
+                                {{ (stats.overall_progress | default(0) * 100) | int }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Grid -->
+        <section aria-labelledby="topics-heading">
+            <h2 id="topics-heading" class="mb-3">Explore Topics</h2>
+            <div class="row">
+                {% for topic in topics %}
+                <div class="col-md-4 mb-4">
+                    <a href="{{ url_for('learning.view_topic', topic_name=topic.name) }}" class="text-decoration-none">
+                        <div class="card topic-card p-3" role="article" aria-labelledby="topic-{{ topic.name }}">
+                            <h3 id="topic-{{ topic.name }}">{{ topic.name | capitalize }}</h3>
+                            <p>{{ topic.description | truncate(100) }}</p>
+                            <div class="progress" role="progressbar" aria-label="Progress for {{ topic.name }}">
+                                <div class="progress-bar bg-primary" style="width: {{ stats.topic_progress.get(topic.name, 0) * 100 }}%">
+                                    {{ (stats.topic_progress.get(topic.name, 0) * 100) | int }}%
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <p class="text-muted">No topics available. Check back soon!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Recommended Topics (Leveraging SelfImprovementEngine) -->
+        <section aria-labelledby="recommendations-heading">
+            <h2 id="recommendations-heading" class="mb-3">Recommended for You</h2>
+            <div class="row" id="recommended-topics">
+                <!-- Populated via AJAX from /api/recommend -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fetch recommended topics from /api/recommend
+        fetch('{{ url_for("learning.api_recommend") }}?count=3')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('recommended-topics');
+                data.forEach(topic => {
+                    const card = `
+                        <div class="col-md-4 mb-4">
+                            <a href="${topic.url}" class="text-decoration-none">
+                                <div class="card topic-card p-3" role="article" aria-labelledby="rec-${topic.name}">
+                                    <h3 id="rec-${topic.name}">${topic.name}</h3>
+                                    <p>${topic.description.substring(0, 100)}...</p>
+                                </div>
+                            </a>
+                        </div>`;
+                    container.innerHTML += card;
+                });
+            })
+            .catch(error => console.error('Error fetching recommendations:', error));
+    </script>
+</body>
+</html>

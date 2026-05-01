@@ -1,0 +1,16 @@
+{
+  "cardinal_rules": [
+    {
+      "id": 1,
+      "title": "Vital Module Placement",
+      "description": "No vital module (memory, reasoning, speech, motor, vision, or cortex) may exist under any subfolder. All must reside directly under the repository root.",
+      "enforcement": "If a vital module is detected under a nested directory, move it to the root and update all imports accordingly."
+    },
+    {
+      "id": 2,
+      "title": "Proximity Principle",
+      "description": "Modules that directly interact or share dependencies must reside in the same directory proximity for cohesion.",
+      "enforcement": "If a module depends on another and resides in a different directory, alert and suggest co-location."
+    }
+  ]
+}

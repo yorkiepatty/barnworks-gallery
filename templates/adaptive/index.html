@@ -1,0 +1,391 @@
+Gemini
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AlphaVox</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background-color: #2196F3; color: white; padding: 20px; text-align: center; }
+        h1 { margin: 0; }
+        .content { padding: 20px; background: white; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .button-container { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px; }
+        .button { flex: 1; min-width: 200px; padding: 20px; background: #4CAF50; color: white; text-align: center; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: bold; }
+        .button.red { background: #F44336; }
+        .button.blue { background: #2196F3; }
+        .button.purple { background: #9C27B0; }
+        .button.orange { background: #FF9800; }
+        .symbols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 30px; }
+        .symbol { padding: 15px; background: #E0E0E0; border-radius: 8px; text-align: center; cursor: pointer; }
+        .symbol:hover { background: #BDBDBD; }
+        .status-bar { margin-top: 30px; padding: 15px; background: #E0E0E0; border-radius: 8px; display: flex; justify-content: space-between; }
+        #gaze-tracking-area {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background-color: #f0f0f0;
+            margin-top: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+        #gaze-cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .eye-tracking-symbol {
+            position: absolute;
+            padding: 10px;
+            background: #E0E0E0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .eye-tracking-symbol.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 8px;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AlphaVox - Multimodal Communication System</h1>
+    </header>
+    
+    <div class="container">
+        <div class="content">
+            <h2>Welcome to AlphaVox</h2>
+            <p>AlphaVox is an advanced AI-powered multimodal communication system designed to assist nonverbal users.</p>
+            
+            <div class="button-container">
+                <a href="#" class="button blue" id="btn-ai-assistant">Activate AI Assistant</a>
+                <a href="/caregiver" class="button purple">Caregiver Dashboard</a>
+                <a href="#" class="button orange" id="btn-eye-tracking">Eye Tracking Mode</a>
+                <a href="#" class="button red" id="btn-emergency">Emergency Alert</a>
+            </div>
+            
+            <h3>Communication Symbols</h3>
+            <div class="symbols">
+                <div class="symbol" data-symbol="food">Food</div>
+                <div class="symbol" data-symbol="drink">Drink</div>
+                <div class="symbol" data-symbol="bathroom">Bathroom</div>
+                <div class="symbol" data-symbol="help">Help</div>
+                <div class="symbol" data-symbol="uncomfortable">Uncomfortable</div>
+                <div class="symbol" data-symbol="tired">Tired</div>
+                <div class="symbol" data-symbol="happy">Happy</div>
+                <div class="symbol" data-symbol="sad">Sad</div>
+                <div class="symbol" data-symbol="yes">Yes</div>
+                <div class="symbol" data-symbol="no">No</div>
+            </div>
+            
+            <div id="gaze-tracking-area">
+                <div id="gaze-cursor"></div>
+                <!-- Eye tracking symbols will be added here dynamically -->
+            </div>
+            
+            <div class="status-bar">
+                <div>System Status: <span id="system-status">Loading...</span></div>
+                <div>Last Activity: <span id="last-activity">None</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for messages -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal">&times;</span>
+            <h3 id="modal-title">Message</h3>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <script>
+        // Get system status on page load
+        fetch('/status')
+            .then(response => response.json())
+            .then(data => {
+                const status = data.components;
+                let statusText = '';
+                if (status.eye_tracking && status.caregiver && status.expertise) {
+                    statusText = 'All systems operational';
+                    document.getElementById('system-status').style.color = 'green';
+                } else {
+                    statusText = 'Some systems unavailable';
+                    document.getElementById('system-status').style.color = 'orange';
+                }
+                document.getElementById('system-status').textContent = statusText;
+            })
+            .catch(error => {
+                document.getElementById('system-status').textContent = 'System error';
+                document.getElementById('system-status').style.color = 'red';
+            });
+        
+        // Handle AI Assistant button
+        document.getElementById('btn-ai-assistant').addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/ai-assistant/activate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showModal('AI Assistant', data.message);
+                document.getElementById('last-activity').textContent = 'AI Assistant activated';
+            })
+            .catch(error => {
+                showModal('Error', 'Error activating AI Assistant');
+            });
+        });
+        
+        // Handle symbols
+        document.querySelectorAll('.symbol').forEach(symbol => {
+            symbol.addEventListener('click', function() {
+                const symbolName = this.dataset.symbol;
+                document.getElementById('last-activity').textContent = `Symbol selected: ${symbolName}`;
+                showModal('Symbol Selected', `You selected: ${symbolName}`);
+            });
+        });
+
+        // Handle eye tracking mode
+        document.getElementById('btn-eye-tracking').addEventListener('click', function(e) {
+            e.preventDefault();
+            const gazeArea = document.getElementById('gaze-tracking-area');
+            if (gazeArea.style.display === 'block') {
+                gazeArea.style.display = 'none';
+                this.textContent = 'Eye Tracking Mode';
+                stopGazeTracking();
+            } else {
+                gazeArea.style.display = 'block';
+                this.textContent = 'Exit Eye Tracking Mode';
+                startGazeTracking();
+            }
+        });
+
+        // Emergency button
+        document.getElementById('btn-emergency').addEventListener('click', function(e) {
+            e.preventDefault();
+            showModal('Emergency Alert', 'Emergency alert has been activated. Help is on the way.');
+            document.getElementById('last-activity').textContent = 'Emergency alert activated';
+        });
+
+        // Modal functions
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('message-modal').style.display = 'block';
+        }
+
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('message-modal').style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('message-modal')) {
+                document.getElementById('message-modal').style.display = 'none';
+            }
+        });
+
+        // Eye tracking implementation
+        let isGazeTracking = false;
+        let gazeTimer = null;
+        let dwellStartTime = null;
+        let currentRegion = null;
+        let dwellThreshold = 2000; // 2 seconds for dwell activation
+        let regions = {};
+
+        function startGazeTracking() {
+            isGazeTracking = true;
+            loadRegions();
+            const gazeArea = document.getElementById('gaze-tracking-area');
+            gazeArea.addEventListener('mousemove', simulateGaze);
+        }
+
+        function stopGazeTracking() {
+            isGazeTracking = false;
+            if (gazeTimer) {
+                clearInterval(gazeTimer);
+                gazeTimer = null;
+            }
+            const gazeArea = document.getElementById('gaze-tracking-area');
+            gazeArea.removeEventListener('mousemove', simulateGaze);
+            // Remove all eye tracking symbols
+            document.querySelectorAll('.eye-tracking-symbol').forEach(el => el.remove());
+        }
+
+        function loadRegions() {
+            fetch('/api/eye-tracking/regions')
+                .then(response => response.json())
+                .then(data => {
+                    regions = data;
+                    renderRegions();
+                })
+                .catch(error => {
+                    console.error('Error loading regions:', error);
+                    showModal('Error', 'Failed to load eye tracking regions');
+                });
+        }
+
+        function renderRegions() {
+            const gazeArea = document.getElementById('gaze-tracking-area');
+            const areaWidth = gazeArea.clientWidth;
+            const areaHeight = gazeArea.clientHeight;
+            
+            // Clear existing regions
+            document.querySelectorAll('.eye-tracking-symbol').forEach(el => el.remove());
+            
+            // Add regions
+            for (const [id, region] of Object.entries(regions)) {
+                const regionEl = document.createElement('div');
+                regionEl.className = 'eye-tracking-symbol';
+                regionEl.dataset.regionId = id;
+                regionEl.textContent = region.params.symbol || id;
+                
+                // Calculate position in pixels
+                const left = region.position[0] * areaWidth;
+                const top = region.position[1] * areaHeight;
+                const width = region.size[0] * areaWidth;
+                const height = region.size[1] * areaHeight;
+                
+                regionEl.style.left = `${left}px`;
+                regionEl.style.top = `${top}px`;
+                regionEl.style.width = `${width}px`;
+                regionEl.style.height = `${height}px`;
+                
+                gazeArea.appendChild(regionEl);
+            }
+        }
+
+        function simulateGaze(e) {
+            if (!isGazeTracking) return;
+            
+            const gazeArea = document.getElementById('gaze-tracking-area');
+            const rect = gazeArea.getBoundingClientRect();
+            
+            // Calculate normalized coordinates (0-1)
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            
+            // Update cursor position
+            const cursor = document.getElementById('gaze-cursor');
+            cursor.style.left = `${e.clientX - rect.left}px`;
+            cursor.style.top = `${e.clientY - rect.top}px`;
+            
+            // Send to backend
+            sendGazeData(x, y);
+        }
+
+        function sendGazeData(x, y) {
+            fetch('/api/eye-tracking/gaze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ x, y })
+            })
+            .then(response => response.json())
+            .then(data => {
+                processGazeResponse(data);
+            })
+            .catch(error => {
+                console.error('Error sending gaze data:', error);
+            });
+        }
+
+        function processGazeResponse(data) {
+            // Reset active state on all regions
+            document.querySelectorAll('.eye-tracking-symbol').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // If we have a current region, highlight it
+            if (data.region) {
+                const regionEl = document.querySelector(`.eye-tracking-symbol[data-region-id="${data.region}"]`);
+                if (regionEl) {
+                    regionEl.classList.add('active');
+                }
+                
+                // Handle dwell time
+                if (data.region !== currentRegion) {
+                    // Region changed, reset dwell time
+                    currentRegion = data.region;
+                    dwellStartTime = Date.now();
+                } else if (dwellStartTime) {
+                    const dwellTime = Date.now() - dwellStartTime;
+                    
+                    // If we've dwelled long enough and there's an action
+                    if (dwellTime >= dwellThreshold && data.action) {
+                        activateRegion(data.region, data.action);
+                        // Reset dwell time to prevent multiple activations
+                        dwellStartTime = Date.now();
+                    }
+                }
+            } else {
+                // No region, reset current region and dwell time
+                currentRegion = null;
+                dwellStartTime = null;
+            }
+        }
+
+        function activateRegion(regionId, action) {
+            const region = regions[regionId];
+            if (!region) return;
+            
+            // Show message based on action
+            if (action.type === 'select_symbol') {
+                showModal('Symbol Selected', action.params.message || `Selected ${regionId}`);
+                document.getElementById('last-activity').textContent = `Eye tracking selected: ${regionId}`;
+            } else if (action.type === 'navigate') {
+                window.location.href = action.params.target;
+            } else if (action.type === 'activate_ai') {
+                fetch('/api/ai-assistant/activate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mode: action.params.mode })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showModal('AI Assistant', data.message);
+                    document.getElementById('last-activity').textContent = 'AI Assistant activated via eye tracking';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+index.html
+Displaying index.html.

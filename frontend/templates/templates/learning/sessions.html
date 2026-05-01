@@ -1,0 +1,411 @@
+{% extends "layout.html" %}
+
+{% block title %}Learning Sessions | AlphaVox{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="card bg-dark text-white mb-4 cyber-card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-play-circle me-2"></i>Learning Sessions
+                        </h3>
+                        <div>
+                            <a href="/learning/" class="btn btn-outline-secondary cyber-btn-sm me-2">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Hub
+                            </a>
+                            <button class="btn btn-success cyber-btn" onclick="startNewSession()">
+                                <i class="fas fa-plus me-1"></i>Start New Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Manage your learning sessions, track progress, and continue where you left off.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Quick Session Start -->
+        <div class="col-lg-4">
+            <div class="card bg-dark text-white cyber-card border-success">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-rocket me-2"></i>Quick Start
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p>Jump right into a learning session based on your current progress.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Session Type</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="sessionType">
+                            <option value="adaptive">Adaptive Learning</option>
+                            <option value="review">Review Previous Topics</option>
+                            <option value="assessment">Skills Assessment</option>
+                            <option value="exploration">Free Exploration</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Duration</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="sessionDuration">
+                            <option value="15">15 minutes</option>
+                            <option value="30" selected>30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">1 hour</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Focus Area</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="focusArea">
+                            <option value="communication">Communication Skills</option>
+                            <option value="technology">Assistive Technology</option>
+                            <option value="voice">Voice Synthesis</option>
+                            <option value="nonverbal">Nonverbal Communication</option>
+                            <option value="all">All Areas</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-success cyber-btn w-100" onclick="startCustomSession()">
+                        <i class="fas fa-play me-1"></i>Start Session
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active/Recent Sessions -->
+        <div class="col-lg-8">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Session History
+                    </h4>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary cyber-btn-sm active" onclick="showActive()">Active</button>
+                        <button type="button" class="btn btn-outline-primary cyber-btn-sm" onclick="showCompleted()">Completed</button>
+                        <button type="button" class="btn btn-outline-primary cyber-btn-sm" onclick="showAll()">All</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="activeSessions">
+                        <!-- Active Session -->
+                        <div class="card bg-success bg-gradient mb-3 border-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            <i class="fas fa-play-circle me-2"></i>Communication Fundamentals
+                                        </h5>
+                                        <p class="mb-1">Started 12 minutes ago • 30 min session</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar bg-white" style="width: 40%;"></div>
+                                        </div>
+                                        <small>Progress: 40% complete (12/30 min)</small>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-light btn-sm me-2" onclick="resumeSession(1)">
+                                            <i class="fas fa-play"></i> Resume
+                                        </button>
+                                        <button class="btn btn-outline-light btn-sm" onclick="pauseSession(1)">
+                                            <i class="fas fa-pause"></i> Pause
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paused Sessions -->
+                        <div class="card bg-dark border-warning mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            <i class="fas fa-pause-circle me-2 text-warning"></i>Voice Synthesis Practice
+                                        </h5>
+                                        <p class="mb-1 text-muted">Paused 2 hours ago • 45 min session</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" style="width: 60%;"></div>
+                                        </div>
+                                        <small class="text-muted">Progress: 60% complete (27/45 min)</small>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-warning cyber-btn-sm me-2" onclick="resumeSession(2)">
+                                            <i class="fas fa-play"></i> Resume
+                                        </button>
+                                        <button class="btn btn-outline-secondary cyber-btn-sm" onclick="endSession(2)">
+                                            <i class="fas fa-stop"></i> End
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="completedSessions" style="display: none;">
+                        <!-- Completed Sessions -->
+                        <div class="card bg-dark border-success mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            <i class="fas fa-check-circle me-2 text-success"></i>Nonverbal Communication Basics
+                                        </h5>
+                                        <p class="mb-1 text-muted">Completed yesterday • 30 min session</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 100%;"></div>
+                                        </div>
+                                        <small class="text-success">Completed with 95% score</small>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-info cyber-btn-sm me-2" onclick="reviewSession(3)">
+                                            <i class="fas fa-eye"></i> Review
+                                        </button>
+                                        <button class="btn btn-outline-secondary cyber-btn-sm" onclick="repeatSession(3)">
+                                            <i class="fas fa-redo"></i> Repeat
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-dark border-info mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            <i class="fas fa-check-circle me-2 text-success"></i>Technology Integration
+                                        </h5>
+                                        <p class="mb-1 text-muted">Completed 2 days ago • 45 min session</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 100%;"></div>
+                                        </div>
+                                        <small class="text-success">Completed with 88% score</small>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-info cyber-btn-sm me-2" onclick="reviewSession(4)">
+                                            <i class="fas fa-eye"></i> Review
+                                        </button>
+                                        <button class="btn btn-outline-secondary cyber-btn-sm" onclick="repeatSession(4)">
+                                            <i class="fas fa-redo"></i> Repeat
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <!-- Session Statistics -->
+        <div class="col-lg-6">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Session Statistics
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <h2 class="text-primary">24</h2>
+                            <p class="mb-0">Total Sessions</p>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h2 class="text-success">18.5h</h2>
+                            <p class="mb-0">Time Spent</p>
+                        </div>
+                        <div class="col-6">
+                            <h2 class="text-info">91%</h2>
+                            <p class="mb-0">Avg. Score</p>
+                        </div>
+                        <div class="col-6">
+                            <h2 class="text-warning">85%</h2>
+                            <p class="mb-0">Completion Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommended Sessions -->
+        <div class="col-lg-6">
+            <div class="card bg-dark text-white cyber-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>Recommended Sessions
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item bg-dark border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Advanced Voice Modulation</h6>
+                                <small class="text-muted">Based on your voice synthesis progress</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary cyber-btn" onclick="startRecommended('voice-modulation')">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+
+                        <div class="list-group-item bg-dark border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Emotional Expression</h6>
+                                <small class="text-muted">Enhance your communication skills</small>
+                            </div>
+                            <button class="btn btn-sm btn-success cyber-btn" onclick="startRecommended('emotional-expression')">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+
+                        <div class="list-group-item bg-dark border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Technology Troubleshooting</h6>
+                                <small class="text-muted">Improve your tech skills</small>
+                            </div>
+                            <button class="btn btn-sm btn-info cyber-btn" onclick="startRecommended('tech-troubleshooting')">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Session Modal -->
+<div class="modal fade" id="sessionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-primary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Start New Learning Session</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you ready to start your learning session?</p>
+                <div id="sessionDetails"></div>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary cyber-btn" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success cyber-btn" onclick="confirmStartSession()">Start Session</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Session management functions
+function startNewSession() {
+    const modal = new bootstrap.Modal(document.getElementById('sessionModal'));
+    document.getElementById('sessionDetails').innerHTML = `
+        <strong>Quick Start Session</strong><br>
+        Duration: 30 minutes<br>
+        Type: Adaptive Learning<br>
+        Focus: All Areas
+    `;
+    modal.show();
+}
+
+function startCustomSession() {
+    const type = document.getElementById('sessionType').value;
+    const duration = document.getElementById('sessionDuration').value;
+    const focus = document.getElementById('focusArea').value;
+
+    const modal = new bootstrap.Modal(document.getElementById('sessionModal'));
+    document.getElementById('sessionDetails').innerHTML = `
+        <strong>Custom Session</strong><br>
+        Duration: ${duration} minutes<br>
+        Type: ${type}<br>
+        Focus: ${focus}
+    `;
+    modal.show();
+}
+
+function confirmStartSession() {
+    // In a real implementation, this would make an API call
+    console.log('Starting learning session...');
+
+    // Simulate session start
+    alert('Learning session started! You would now be redirected to the learning interface.');
+
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('sessionModal'));
+    modal.hide();
+}
+
+function resumeSession(sessionId) {
+    console.log('Resuming session:', sessionId);
+    alert('Resuming session ' + sessionId + '...');
+}
+
+function pauseSession(sessionId) {
+    console.log('Pausing session:', sessionId);
+    alert('Session ' + sessionId + ' paused.');
+}
+
+function endSession(sessionId) {
+    console.log('Ending session:', sessionId);
+    if (confirm('Are you sure you want to end this session?')) {
+        alert('Session ' + sessionId + ' ended.');
+    }
+}
+
+function reviewSession(sessionId) {
+    console.log('Reviewing session:', sessionId);
+    alert('Opening session ' + sessionId + ' review...');
+}
+
+function repeatSession(sessionId) {
+    console.log('Repeating session:', sessionId);
+    alert('Starting repeat of session ' + sessionId + '...');
+}
+
+function startRecommended(sessionType) {
+    console.log('Starting recommended session:', sessionType);
+    alert('Starting recommended session: ' + sessionType);
+}
+
+function showActive() {
+    document.getElementById('activeSessions').style.display = 'block';
+    document.getElementById('completedSessions').style.display = 'none';
+
+    // Update button states
+    document.querySelectorAll('.btn-group button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+function showCompleted() {
+    document.getElementById('activeSessions').style.display = 'none';
+    document.getElementById('completedSessions').style.display = 'block';
+
+    // Update button states
+    document.querySelectorAll('.btn-group button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+function showAll() {
+    document.getElementById('activeSessions').style.display = 'block';
+    document.getElementById('completedSessions').style.display = 'block';
+
+    // Update button states
+    document.querySelectorAll('.btn-group button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Learning Sessions page loaded');
+});
+</script>
+{% endblock %}

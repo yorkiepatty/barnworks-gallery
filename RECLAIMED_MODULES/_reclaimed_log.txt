@@ -1,0 +1,313 @@
+✅ /Users/EverettN/ALPHAVOXWAKESUP/email_url_fixer.py → email_url_fixer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/advanced_markdown_fixer.py → advanced_markdown_fixer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain_hierarchy_organizer.py → brain_hierarchy_organizer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/activate_voice_cortex.py → activate_voice_cortex.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/alphavox_knowledge_expander.py → alphavox_knowledge_expander.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/config.py → config.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/super_aggressive_lint_crusher.py → super_aggressive_lint_crusher.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/eye_tracking_service.py → eye_tracking_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/children_guardian.py → children_guardian.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/main_fixed.py → main_fixed.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/nonverbal_engine.py → nonverbal_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/core.py → core.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/markdown_lint_fixer.py → markdown_lint_fixer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/start_alphavox_unified.py → start_alphavox_unified.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain.py → brain.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/speech_recognition_engine.py → speech_recognition_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/voice_redirector.py → voice_redirector.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/main.original.py → main.original.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/voice_cortex.py → voice_cortex.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/app.py → app.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/alphavox_production.py → alphavox_production.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/auto_organize_intermingles.py → auto_organize_intermingles.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/final_polisher.py → final_polisher.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/main.py → main.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/multi_mission_security_infrastructure.py → multi_mission_security_infrastructure.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/final_brain_organizer.py → final_brain_organizer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/capacity_verification_report.py → capacity_verification_report.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/aggressive_lint_eliminator.py → aggressive_lint_eliminator.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/advanced_tts_service.py → advanced_tts_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/reclaim_modules.py → reclaim_modules.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/vision_engine.py → vision_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/app/sec/redaction.py → redaction.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/app/sec/sec_logging.py → sec_logging.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/app/sec/http.py → http.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/alphavox/bin/jp.py → jp.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/tests/test_security.py → test_security.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/tests/conftest.py → conftest.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/tests/__init__.py → __init__.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/tests/test_nlu.py → test_nlu.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_voice_stability.py → test_voice_stability.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_production.py → test_production.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_all_endpoints.py → test_all_endpoints.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_flask_startup.py → test_flask_startup.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_vision_system.py → test_vision_system.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_code.py → test_code.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_imports.py → test_imports.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_learning_routes.py → test_learning_routes.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/simplified_lstm_test.py → simplified_lstm_test.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_behavior_init.py → test_behavior_init.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_gesture_model.py → test_gesture_model.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/final_production_test.py → final_production_test.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_learning_hub.py → test_learning_hub.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/simple_api_test.py → simple_api_test.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/test_all_functionality.py → test_all_functionality.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/integration_test.py → integration_test.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/testing/create_test_lstm_models.py → create_test_lstm_models.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/email_url_fixer.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/redaction.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_voice_stability.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/advanced_markdown_fixer.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_security.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/conftest.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/brain_hierarchy_organizer.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/activate_voice_cortex.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/alphavox_knowledge_expander.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/config.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/super_aggressive_lint_crusher.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/eye_tracking_service.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_production.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/children_guardian.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_all_endpoints.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_flask_startup.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_vision_system.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_code.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_imports.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/sec_logging.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/__init__.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/main_fixed.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/nonverbal_engine.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/core.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/markdown_lint_fixer.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/start_alphavox_unified.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_learning_routes.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/brain.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/speech_recognition_engine.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/simplified_lstm_test.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/voice_redirector.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_behavior_init.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/http.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/main.original.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/voice_cortex.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/app.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/jp.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_gesture_model.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/final_production_test.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/alphavox_production.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_learning_hub.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/auto_organize_intermingles.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/simple_api_test.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/final_polisher.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_all_functionality.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/main.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/multi_mission_security_infrastructure.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/final_brain_organizer.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/capacity_verification_report.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/aggressive_lint_eliminator.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/test_nlu.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/advanced_tts_service.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/integration_test.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/create_test_lstm_models.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/reclaim_modules.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/RECLAIMED_MODULES/vision_engine.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/scripts/db_migrate.py → db_migrate.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/scripts/generate_admin_hash.py → generate_admin_hash.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/scripts/normalize_indent.py → normalize_indent.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/scripts/wait_for_db.py → wait_for_db.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/scripts/repair_app.py → repair_app.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/learning_service.py → learning_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/db.py → db.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/learning_utils.py → learning_utils.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_backup.py → memory_backup.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_manager.py → memory_manager.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/models.py → models.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory.py → memory.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/database.py → database.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/repo_guard.py → repo_guard.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_mesh_bridge.py → memory_mesh_bridge.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/knowledge_integration_modules.py → knowledge_integration_modules.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/autonomous_learning_engine.py → autonomous_learning_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/knowledge_engine.py → knowledge_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/advanced_learning.py → advanced_learning.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/app_init.py → app_init.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/setup_complete_environment.py → setup_complete_environment.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/ai_learning_engine.py → ai_learning_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_engine.py → memory_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_engine_secure.py → memory_engine_secure.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/module.py → module.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/alphavox_knowledge_engine.py → alphavox_knowledge_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/performance_optimizer.py → performance_optimizer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_service.py → memory_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_hook.py → memory_hook.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_mesh.py → memory_mesh.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/memory_router.py → memory_router.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/knowledge_integration.py → knowledge_integration.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/02_memory/analytics_engine.py → analytics_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_diag.py → voice_diag.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_synthesis.py → voice_synthesis.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_diagnostic.py → voice_diagnostic.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/real_speech_recognition.py → real_speech_recognition.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/speech_integration_modules.py → speech_integration_modules.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/tts_service.py → tts_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/alphavox_ultimate_voice.py → alphavox_ultimate_voice.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_analysis_service.py → voice_analysis_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/enhanced_speech_recognition.py → enhanced_speech_recognition.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/tts_bridge.py → tts_bridge.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/sound_recognition_service.py → sound_recognition_service.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/speech_recognition_engine.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/simplified_speech_recognition.py → simplified_speech_recognition.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/audio_processor_modules.py → audio_processor_modules.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_redirector.py skipped (duplicate name)
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_cortex.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/generate_voice_samples.py → generate_voice_samples.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/speech_integration.py → speech_integration.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/speech_response.py → speech_response.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/alphavox_speech_module.py → alphavox_speech_module.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/voice_diagnostics.py → voice_diagnostics.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/04_speech/advanced_tts_service.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/perplexity_service.py → perplexity_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/internet_mode.py → internet_mode.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/train_lstm_model.py → train_lstm_model.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/reflective_planner.py → reflective_planner.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/advanced_nlp_service.py → advanced_nlp_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/check_module_warnings.py → check_module_warnings.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/nlp_module.py → nlp_module.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/reasoning_engine.py → reasoning_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/conversation_loop.py → conversation_loop.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/conversation_integration.py → conversation_integration.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/learning_analytics.py → learning_analytics.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/compare_environments.py → compare_environments.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/neural_learning_core.py → neural_learning_core.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/diagnose_learning_404.py → diagnose_learning_404.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/alphavox_input_nlu.py → alphavox_input_nlu.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/verify_no_derek.py → verify_no_derek.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/nlp_integration.py → nlp_integration.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/self_modifying_code.py → self_modifying_code.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/train_nonverbal_models.py → train_nonverbal_models.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/language_service.py → language_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/transcriber.py → transcriber.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/stemming_service.py → stemming_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/self_repair.py → self_repair.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/adaptive_conversation_routes.py → adaptive_conversation_routes.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/train_models.py → train_models.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/intent_engine.py → intent_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/simplified_conversation.py → simplified_conversation.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/local_reasoning_engine.py → local_reasoning_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/learning_hub_status.py → learning_hub_status.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/debug_startup.py → debug_startup.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/complete_conversation_handler.py → complete_conversation_handler.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/learn_pubmed.py → learn_pubmed.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/interpreter.py → interpreter.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/diagnose_learning_hub_mac.py → diagnose_learning_hub_mac.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/conversation_bridge.py → conversation_bridge.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/Python_Internet_access.py → Python_Internet_access.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/adaptive_conversation.py → adaptive_conversation.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/learning_journey.py → learning_journey.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/alphavox_learning_coordinator.py → alphavox_learning_coordinator.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/complete_system_verification.py → complete_system_verification.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/learning_hub_route.py → learning_hub_route.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/fix_learning_hub.py → fix_learning_hub.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/nlu_core.py → nlu_core.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/research_module.py → research_module.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/behavioral_interpreter.py → behavioral_interpreter.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/input_analyzer.py → input_analyzer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/comprehensive_module_scan.py → comprehensive_module_scan.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/alphavox_local_reasoning.py → alphavox_local_reasoning.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/literature_crawler.py → literature_crawler.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/learn_arxiv.py → learn_arxiv.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/diagnose_all_routes.py → diagnose_all_routes.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/web_crawler.py → web_crawler.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/emergency_derek_fix.py → emergency_derek_fix.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/03_reasoning/proactive_intelligence.py → proactive_intelligence.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/production_app.py → production_app.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/start_with_guardian.py → start_with_guardian.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/activate_voice_cortex.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/services.py → services.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/server.py → server.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/learning_routes.py → learning_routes.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/emergency_start.py → emergency_start.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/alphavox_ui.py → alphavox_ui.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/config.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/logging_config.py → logging_config.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/env.py → env.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/security_module.py → security_module.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/system_check.py → system_check.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/validators.py → validators.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/routes_module.py → routes_module.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/conversation_engine.py → conversation_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/route.py → route.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/alphavox_module_loader.py → alphavox_module_loader.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/alpha_interface.py → alpha_interface.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/secrets_env.py → secrets_env.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/core.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/AlphaVox-Cortex.py → AlphaVox-Cortex.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/start_alphavox_unified.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/logger.py → logger.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/api.py → api.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/brain.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/setup.py → setup.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/replit_mcp_server.py → replit_mcp_server.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/json_guardian.py → json_guardian.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/clients.py → clients.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/alpha_security_bridge.py → alpha_security_bridge.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/settings.py → settings.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/app.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/check_env.py → check_env.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/alphavox_production.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/router.py → router.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/main.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/cognitive_bridge.py → cognitive_bridge.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/security_config.py → security_config.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/endpoints.py → endpoints.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/helpers.py → helpers.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/middleware.py → middleware.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/executor.py → executor.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/infrastructure_enforcer.py → infrastructure_enforcer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/health_routes.py → health_routes.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/01_cortex/boot_guardian.py → boot_guardian.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/nonverbal_expertiser.py → nonverbal_expertiser.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/face_to_face.py → face_to_face.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/eye_tracking_api.py → eye_tracking_api.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/eye_tracking_service.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/facial_gesture_service.py → facial_gesture_service.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/nonverbal_engine.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/real_eye_tracking.py → real_eye_tracking.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/gesture_manager.py → gesture_manager.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/gesture_dictionary.py → gesture_dictionary.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/generate_patent_visuals.py → generate_patent_visuals.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/manifesto_presentation.py → manifesto_presentation.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/brain/05_vision/vision_engine.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/lamdba_function.py → lamdba_function.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/add_license_headers.py → add_license_headers.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/caregiver_dashboard_modules.py → caregiver_dashboard_modules.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/tone_manager.py → tone_manager.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/emotion_tagging.py → emotion_tagging.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/audio_pattern_service.py → audio_pattern_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/revolution_demo_script.py → revolution_demo_script.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/action_scheduler.py → action_scheduler.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/add_footer.py → add_footer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/caregiver_interface.py → caregiver_interface.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/personality_service.py → personality_service.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/alphavox_temporal.py → alphavox_temporal.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/social_media_launcher.py → social_media_launcher.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/audio_processor.py → audio_processor.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/engine_temporal.py → engine_temporal.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/audio_play.py → audio_play.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/caregiver_dashboard.py → caregiver_dashboard.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/behavior_capture.py → behavior_capture.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/color_scheme_routes.py → color_scheme_routes.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/loop.py → loop.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/temporal_nonverbal_engine.py → temporal_nonverbal_engine.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/emotion.py → emotion.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/color_scheme_generator.py → color_scheme_generator.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/brain/06_motor/christman_ai_experience.py → christman_ai_experience.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/venv/bin/jp.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/attached_assets/nonverbal_engine_asset.py → nonverbal_engine_asset.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/modules/__init__.py skipped (duplicate name)
+✅ /Users/EverettN/ALPHAVOXWAKESUP/christman_ai_revolution_package/revolution_demo.py → revolution_demo.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/security_infrastructure/05_mission_protocols/multi_mission_protector.py → multi_mission_protector.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/security_infrastructure/04_cardinal_rules/cardinal_rules_enforcer.py → cardinal_rules_enforcer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/security_infrastructure/01_neural_foundation/neural_security_enforcer.py → neural_security_enforcer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/security_infrastructure/03_aws_encryption/aws_encryption_enforcer.py → aws_encryption_enforcer.py
+✅ /Users/EverettN/ALPHAVOXWAKESUP/security_infrastructure/02_hipaa_compliance/hipaa_security_enforcer.py → hipaa_security_enforcer.py
+⚠️ /Users/EverettN/ALPHAVOXWAKESUP/routes/__init__.py skipped (duplicate name)

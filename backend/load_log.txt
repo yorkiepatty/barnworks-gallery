@@ -1,0 +1,89 @@
+INFO:advanced_learning:Advanced Learning System initialized
+WARNING:perplexity_service:PERPLEXITY_API_KEY environment variable is not set. Service disabled.
+ERROR:ModuleLoader:  ❌ conversation_loop: Could not find PyAudio; check installation
+WARNING:caregiver_interface:Eye tracking service not available
+WARNING:caregiver_interface:Learning analytics not available
+WARNING:caregiver_interface:Nonverbal expertise not available
+WARNING:root:OpenAI API key not found. AI color generation will not be available.
+ERROR:ModuleLoader:  ❌ routes: No module named 'routes'
+ERROR:ModuleLoader:  ❌ security_module: No module named 'bleach'
+INFO:ModuleLoader:  ✅ alpha_security_bridge
+INFO:ModuleLoader:   → 1/2 loaded
+INFO:ModuleLoader:
+📦 self_modification...
+INFO:ModuleLoader:  ✅ self_modifying_code
+INFO:ModuleLoader:  ✅ self_repair
+INFO:ModuleLoader:   → 2/2 loaded
+INFO:ModuleLoader:
+📦 integration...
+INFO:ModuleLoader:  ⏭️  face_to_face (hardware-dependent, skipped)
+INFO:ModuleLoader:  ✅ alphavox_module_loader
+INFO:ModuleLoader:   → 1/2 loaded
+INFO:ModuleLoader:
+📦 web_framework...
+INFO:ModuleLoader:  ✅ middleware
+INFO:ModuleLoader:  ✅ server
+INFO:ModuleLoader:   → 2/2 loaded
+INFO:ModuleLoader:
+================================================================================
+INFO:ModuleLoader:📊 ALPHAVOX MODULE LOADING SUMMARY
+INFO:ModuleLoader:================================================================================
+INFO:ModuleLoader:  Total modules: 89
+INFO:ModuleLoader:  ✅ Loaded: 75 (84.3%)
+INFO:ModuleLoader:  ⏭️  Skipped (hardware): 11
+INFO:ModuleLoader:  ❌ Failed (missing deps): 3
+INFO:ModuleLoader:================================================================================
+INFO:ModuleLoader:
+⚠️  Optional modules not loaded (need pip install):
+INFO:ModuleLoader:  - conversation_loop: Could not find PyAudio; check installation
+INFO:ModuleLoader:  - routes: No module named 'routes'
+INFO:ModuleLoader:  - security_module: No module named 'bleach'
+INFO:ModuleLoader:
+🔧 Initializing module instances...
+INFO:memory_engine:Loaded 9 memory entries.
+INFO:ModuleLoader:  ✅ memory_engine instance created
+INFO:ModuleLoader:  ✅ tone_manager instance created
+INFO:conversation_engine:Conversation engine initialized
+INFO:ModuleLoader:  ✅ conversation_engine instance created
+INFO:ModuleLoader:  ✅ analytics_engine instance created
+INFO:ModuleLoader:
+============================================================
+INFO:ModuleLoader:🧠 alphavox CONSCIOUSNESS: 82.0% OPERATIONAL
+INFO:ModuleLoader:============================================================
+INFO:root:✅ alphavox modules loaded: 73/89 (82.0%)
+INFO:nonverbal_engine:Initializing NonverbalEngine with self-learning capabilities
+INFO:nonverbal_engine:NonverbalEngine initialized with self-modification capabilities
+INFO:real_eye_tracking:Real eye tracking service initialized
+INFO:root:Using real eye tracking service
+WARNING:root:Real speech recognition not available: name 'sd' is not defined, using simulated service
+INFO:sound_recognition_service:Initializing SoundRecognitionService
+INFO:sound_recognition_service:Using simulated sound recognition
+INFO:sound_recognition_service:SoundRecognitionService initialized
+INFO:behavior_capture:Initialized behavior capture processors
+INFO:root:Behavior capture system initialized
+INFO:root:Initialized AI self-learning and self-modification capabilities
+INFO:nonverbal_engine:Initializing NonverbalEngine with self-learning capabilities
+INFO:nonverbal_engine:NonverbalEngine initialized with self-modification capabilities
+INFO:conversation_engine:Conversation engine initialized
+INFO:behavioral_interpreter:Behavioral interpreter initialized
+INFO:interpreter:Interpreter initialized
+INFO:root:Advanced AI interpreter initialized
+INFO:root:All advanced AI components initialized
+INFO:root:Knowledge integration initialized
+WARNING:speech_integration:Real speech recognition engine not available
+WARNING:speech_integration:Enhanced speech recognition not available
+INFO:speech_integration:Speech Integration initialized
+INFO:root:Speech integration initialized
+WARNING:caregiver_dashboard:Caregiver Interface import failed: No module named 'attached_assets.caregiver_interface'
+INFO:caregiver_dashboard:Caregiver Dashboard module initialized
+INFO:root:Caregiver dashboard initialized
+WARNING:root:Audio processor not available: No module named 'torchaudio'
+INFO:root:Temporal nonverbal engine initialized
+INFO:root:Conversation integration initialized
+INFO:root:Caregiver routes registered
+INFO:adaptive_conversation:Conversation Complexity Engine initialized
+INFO:adaptive_conversation_routes:Adaptive conversation routes registered
+INFO:root:Adaptive conversation routes registered
+INFO:root:🚀 AlphaVox Services Initialized at Root
+Failed to access https://openai.com/blog. Error: 403 Client Error: Forbidden for url: https://openai.com/blog
+APP LOADED SUCCESSFULLY

@@ -1,0 +1,38 @@
+[
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T10:44:31.991593Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T10:47:14.602561Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T10:57:25.053502Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T11:00:38.933765Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T11:09:40.205752Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T11:13:12.702288Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T11:22:54.920788Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T11:28:07.498643Z"
+  },
+  {
+    "event": "shutdown",
+    "timestamp": "2025-10-28T11:38:15.992775Z"
+  }
+]
