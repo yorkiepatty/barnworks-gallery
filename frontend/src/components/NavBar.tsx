@@ -150,10 +150,10 @@ const s: Record<string, React.CSSProperties> = {
   },
   bar: {
     display: 'block',
-    width: 22,
-    height: 2,
-    background: 'var(--primary-color, #00b4d8)',
-    borderRadius: 2,
+    width: '22px',
+    height: '3px',
+    background: '#00b4d8',
+    borderRadius: '2px',
     transition: 'all 0.25s ease',
   },
 }
