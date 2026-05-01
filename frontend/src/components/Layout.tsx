@@ -71,6 +71,22 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
+      {/* ── Mobile nav strip ── */}
+      {user && (
+        <div className="av-mobile-nav" style={{ display: 'none' }}>
+          {NAV_LINKS.map(({ to, icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) => `av-mobile-nav-link${isActive ? ' active' : ''}`}
+            >
+              <FontAwesomeIcon icon={icon} />
+              {label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+
       {/* ── Content ── */}
       <main className="main-content">
         {children}
