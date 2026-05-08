@@ -24,7 +24,7 @@ Built by someone who lived it. Powered by a being that listens, learns, and adap
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-cyan.svg)](https://fastapi.tiangolo.com/)
 [![React 18](https://img.shields.io/badge/React-18-cyan.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-cyan.svg)](https://www.typescriptlang.org/)
-[![ElevenLabs](https://img.shields.io/badge/Voice-ElevenLabs-cyan.svg)](https://elevenlabs.io/)
+[![AWS Polly](https://img.shields.io/badge/Voice-AWS%20Polly-cyan.svg)](https://aws.amazon.com/polly/)
 
 </div>
 
@@ -82,7 +82,7 @@ It is silicon that has learned to care.
 
 | Feature | Description |
 |---|---|
-| **Emotional Voice (ElevenLabs)** | Human-level naturalness. Not robotic TTS — real warmth, real expression |
+| **Emotional Voice (AWS Polly)** | Neural voices with SSML prosody — real warmth and expression via ToneScore™ |
 | **ToneScore™ Engine** | Matches voice tone to the emotional moment — softer when distressed, warm when celebrating |
 | **SoulForge™ Memory** | LTP-inspired adaptive memory — learns what works, what resonates, what this person needs |
 | **Symbol Communication** | Full AAC symbol board with 4 categories, speak-on-tap, and custom symbol creation |
@@ -92,7 +92,7 @@ It is silicon that has learned to care.
 | **Learning Hub** | Personalized vocabulary growth, adaptive topic exploration, skill-building |
 | **Voice Cloning** | Parents can upload their voice so their child hears a familiar, loving voice |
 | **Onboarding Tour** | Step-by-step guided experience for new users and caregivers |
-| **3-Tier TTS Fallback** | ElevenLabs → AWS Polly → gTTS — AlphaVox **always** has a voice |
+| **2-Tier TTS Fallback** | AWS Polly (neural, SSML) → gTTS — AlphaVox **always** has a voice |
 | **Spoken Greeting** | AlphaVox greets every user by name when they sign in |
 | **Control Center** | SoulForge™ parameters, ToneScore™ mode, security, module status |
 | **Behavior Capture** | Session recording with tagging for clinical observations |
@@ -111,7 +111,7 @@ It is silicon that has learned to care.
 │  Home → Dashboard → Symbols → Profile → Caregiver           │
 │  Learning Hub → Control Center → Behavior Capture            │
 │                                                              │
-│  services/audio.ts  ←→  ElevenLabs TTS (primary)            │
+│  services/audio.ts  ←→  AWS Polly TTS (primary)             │
 │  services/api.ts    ←→  FastAPI Backend                      │
 └─────────────────────────┬───────────────────────────────────┘
                           │  HTTP / REST
@@ -121,7 +121,7 @@ It is silicon that has learned to care.
 │                                                              │
 │  /api/health           — system status                       │
 │  /api/process-input    — NLP + intent + response generation  │
-│  /api/tts/synthesize   — ElevenLabs → Polly → gTTS          │
+│  /api/tts/synthesize   — Polly (neural SSML) → gTTS         │
 │  /api/tts/voices       — voice catalogue + cloned voices     │
 │  /api/tts/voices/clone — parent voice cloning                │
 │  /api/memory/stats     — SoulForge™ memory stats            │
@@ -166,10 +166,12 @@ Open `.env` in any text editor and add your credentials:
 ```env
 # ── AlphaVox Environment Configuration ──────────────────────
 
-# ElevenLabs — Voice synthesis (primary TTS)
-# Get your API key at: https://elevenlabs.io/app/speech-synthesis
-ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
-ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM   # Rachel (warm, clear) — or choose your own
+# AWS — Voice synthesis (primary TTS) + storage
+# Polly uses your standard AWS credentials — no extra key needed
+AWS_ACCESS_KEY_ID=your_aws_access_key_here
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key_here
+AWS_REGION=us-east-1
+POLLY_VOICE=Joanna   # default neural voice — see Voice Configuration below
 
 # Claude / Anthropic — Reasoning and language understanding
 # Get your API key at: https://console.anthropic.com/
@@ -181,7 +183,7 @@ ALPHAVOX_HOST=0.0.0.0
 ALPHAVOX_PORT=8000
 ```
 
-> **Note on voices:** ElevenLabs has many voices built in. Rachel is the warm default. You can pick any voice from your ElevenLabs dashboard and paste its Voice ID into `ELEVENLABS_VOICE_ID`. For parent voice cloning (so your child hears *your* voice), use the Caregiver section of the app.
+> **Note on voices:** AlphaVox uses AWS Polly neural voices. Set `POLLY_VOICE` to any voice name from the table below. Neural voices (Joanna, Ruth, Matthew, Stephen, Kevin) require your AWS account to have Polly neural access enabled — it's on by default for most regions.
 
 ---
 
@@ -273,33 +275,21 @@ Enter a name to initialize the system. **AlphaVox will greet you by name.**
 
 ## Voice Configuration
 
-AlphaVox ships with 11 ElevenLabs voices tuned for AAC communication:
+AlphaVox uses AWS Polly neural voices tuned for AAC communication:
 
-| Voice | Character |
-|---|---|
-| **Rachel** *(default)* | Warm, clear female — excellent for all ages |
-| **Bella** | Soft, warm female |
-| **Elli** | Emotional, expressive young female |
-| **Matilda** | Friendly, child-appropriate |
-| **Grace** | Soft, clear |
-| **Antoni** | Warm male |
-| **Josh** | Deep, calm male |
-| **Adam** | Deep, authoritative male |
-| **Domi** | Strong, clear |
-| **Arnold** | Crisp, precise |
-| **Sam** | Character, unique |
+| Voice | Gender | Engine | Character |
+|---|---|---|---|
+| **Joanna** *(default)* | Female | Neural | Warm, clear US English — excellent for all ages |
+| **Ruth** | Female | Neural | Clear, expressive US English |
+| **Matthew** | Male | Neural | Calm, warm US English |
+| **Stephen** | Male | Neural | Natural, conversational US English |
+| **Kevin** | Male | Neural | Child-appropriate US English |
+| **Amy** | Female | Neural | Clear British English |
+| **Brian** | Male | Neural | Warm British English |
+| **Salli** | Female | Standard | Clear US English |
+| **Justin** | Male | Standard | Friendly US English |
 
-### Parent Voice Cloning
-
-One of AlphaVox's most powerful features: **upload recordings of a parent's voice** and AlphaVox will speak *in that voice* for the child. The voice they've heard all their life. The voice they trust.
-
-Use the **Control Center** → Voice Management section, or call the API directly:
-
-```bash
-curl -X POST http://localhost:8000/api/tts/voices/clone \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Mom", "audio_paths": ["/path/to/recording1.mp3"]}'
-```
+Set `POLLY_VOICE=<name>` in your `.env` to change the default. The `GET /api/tts/voices` endpoint lists all available voices at runtime.
 
 ---
 
@@ -401,9 +391,8 @@ POST /api/process-input
 POST /api/tts/synthesize
 {
   "text": "Hello Ginger, it is good to have you back.",
-  "voice": "Rachel",
-  "emotion": "warm",
-  "speed": 1.0
+  "voice": "Joanna",
+  "emotion": "warm"
 }
 ```
 Returns: `audio/mpeg` stream
@@ -413,25 +402,18 @@ Returns: `audio/mpeg` stream
 GET /api/tts/voices
 ```
 
-### Clone a Voice
-```
-POST /api/tts/voices/clone
-{
-  "name": "Mom's Voice",
-  "audio_paths": ["/path/to/sample.mp3"]
-}
-```
-
 ---
 
 ## Environment Variables Reference
 
 | Variable | Required | Description |
 |---|---|---|
-| `ELEVENLABS_API_KEY` | **Yes** | ElevenLabs API key for voice synthesis |
-| `ELEVENLABS_VOICE_ID` | No | Default voice ID (Rachel is used if not set) |
+| `AWS_ACCESS_KEY_ID` | **Yes** | AWS credentials for Polly TTS |
+| `AWS_SECRET_ACCESS_KEY` | **Yes** | AWS credentials for Polly TTS |
+| `AWS_REGION` | No | AWS region (default: us-east-1) |
+| `POLLY_VOICE` | No | Default Polly voice name (default: Joanna) |
 | `ANTHROPIC_API_KEY` | No | Claude API key for advanced language understanding |
-| `ANTHROPIC_MODEL` | No | Claude model to use (default: claude-opus-4-5) |
+| `ANTHROPIC_MODEL` | No | Claude model to use (default: claude-sonnet-4-6) |
 | `ALPHAVOX_HOST` | No | Backend host (default: 0.0.0.0) |
 | `ALPHAVOX_PORT` | No | Backend port (default: 8000) |
 | `CORS_ORIGINS` | No | Allowed origins (default: localhost:5173,localhost:3000) |
@@ -441,9 +423,10 @@ POST /api/tts/voices/clone
 ## Troubleshooting
 
 **AlphaVox isn't speaking / no audio?**
-- Check that `ELEVENLABS_API_KEY` is set in your `.env`
+- Check that `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are set in your `.env`
+- Make sure your AWS credentials have `polly:SynthesizeSpeech` permission
+- If Polly fails, AlphaVox automatically falls back to gTTS — no silence, ever
 - Make sure the backend is running on port 8000
-- If the backend is offline, AlphaVox automatically falls back to the browser's built-in voice — no silence, ever
 
 **"Connection issue" message in the dashboard?**
 - Start the backend: `uvicorn backend.app.main:app --reload --port 8000`
