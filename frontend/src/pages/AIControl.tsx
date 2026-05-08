@@ -111,11 +111,9 @@ export default function AIControl() {
   const initialVoicePrefs = getVoicePrefs();
   const [voices, setVoices]           = useState<VoiceEntry[]>([]);
   const [voicesLoading, setVoicesLoading] = useState(true);
-  const [selectedVoice, setSelectedVoice] = useState(initialVoicePrefs.voiceName ?? 'Bella');
+  const [selectedVoice, setSelectedVoice] = useState(initialVoicePrefs.voiceName ?? 'Joanna');
   const [speed, setSpeed]             = useState(initialVoicePrefs.speed ?? 1.0);
   const [emotion, setEmotion]         = useState(initialVoicePrefs.emotion ?? 'warm');
-  const [stability, setStability]     = useState(initialVoicePrefs.stability ?? 0.65);
-  const [similarity, setSimilarity]   = useState(initialVoicePrefs.similarityBoost ?? 0.80);
   const [voiceSaved, setVoiceSaved]   = useState(false);
   const [previewing, setPreviewing]   = useState(false);
   const previewAudio = useRef<HTMLAudioElement | null>(null);
@@ -123,7 +121,7 @@ export default function AIControl() {
   useEffect(() => {
     fetch('/api/tts/voices')
       .then(r => r.json())
-      .then((data: VoiceEntry[]) => setVoices(data))
+      .then((data: { voices: VoiceEntry[]; default: string }) => setVoices(data.voices ?? []))
       .catch(() => setVoices([]))
       .finally(() => setVoicesLoading(false));
   }, []);
@@ -140,7 +138,7 @@ export default function AIControl() {
   };
 
   const handleSaveVoice = () => {
-    saveVoicePrefs({ voiceName: selectedVoice, speed, emotion, stability, similarityBoost: similarity });
+    saveVoicePrefs({ voiceName: selectedVoice, speed, emotion });
     setVoiceSaved(true);
     setTimeout(() => setVoiceSaved(false), 2500);
   };
@@ -153,12 +151,10 @@ export default function AIControl() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text:             `Hi, I'm ${selectedVoice}. This is what I sound like.`,
-          voice:            selectedVoice,
+          text:    `Hi, I'm ${selectedVoice}. This is what I sound like.`,
+          voice:   selectedVoice,
           speed,
           emotion,
-          stability,
-          similarity_boost: similarity,
         }),
       });
       if (!res.ok) throw new Error('TTS failed');
@@ -192,7 +188,7 @@ export default function AIControl() {
           {/* Voice Engine */}
           <div className="system-card mb-4">
             <div className="card-header-cyber">
-              <span><FontAwesomeIcon icon={faVolumeUp} className="me-2" />Voice Engine — ElevenLabs</span>
+              <span><FontAwesomeIcon icon={faVolumeUp} className="me-2" />Voice Engine — AWS Polly</span>
             </div>
             <div className="card-body-cyber">
 
@@ -222,13 +218,11 @@ export default function AIControl() {
               </div>
 
               {/* Sliders */}
-              <SliderRow label="Speed"            id="vs"  min={0.5}  max={2.0} step={0.05} value={speed}      onChange={setSpeed} />
-              <SliderRow label="Stability"        id="vst" min={0.0}  max={1.0} step={0.05} value={stability}  onChange={setStability} />
-              <SliderRow label="Similarity Boost" id="vsb" min={0.0}  max={1.0} step={0.05} value={similarity} onChange={setSimilarity} />
+              <SliderRow label="Speed" id="vs" min={0.5} max={2.0} step={0.05} value={speed} onChange={setSpeed} />
 
               <div className="cyber-alert mb-3">
                 <p className="small mb-0">
-                  Lower stability = more expressive. Higher similarity = stays truer to the original voice.
+                  Emotion drives ToneScore™ — Polly adjusts pitch, rate, and volume automatically.
                 </p>
               </div>
 

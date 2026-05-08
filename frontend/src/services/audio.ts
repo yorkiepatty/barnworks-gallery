@@ -114,7 +114,7 @@ async function _tryBackendTTS(text: string, opts: SpeakOptions): Promise<boolean
     if (opts.similarityBoost) body.similarity_boost = opts.similarityBoost;
     if (opts.style)           body.style            = opts.style;
 
-    const response = await fetch('/api/tts/speak', {
+    const response = await fetch('/api/tts/synthesize', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(body),
