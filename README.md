@@ -97,6 +97,7 @@ It is silicon that has learned to care.
 | **Control Center** | SoulForge™ parameters, ToneScore™ mode, security, module status |
 | **Behavior Capture** | Session recording with tagging for clinical observations |
 | **HIPAA-Ready** | ML-KEM-768 + XChaCha20 encryption, harvest-now-decrypt-later protection |
+| **FDA 21 CFR Part 11** | Tamper-evident audit trail, electronic signatures, SaMD version control — Class II medical device compliance |
 
 ---
 
@@ -173,7 +174,7 @@ ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM   # Rachel (warm, clear) — or choose 
 # Claude / Anthropic — Reasoning and language understanding
 # Get your API key at: https://console.anthropic.com/
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
-ANTHROPIC_MODEL=claude-opus-4-5
+ANTHROPIC_MODEL=claude-sonnet-4-6
 
 # Server settings (defaults work out of the box)
 ALPHAVOX_HOST=0.0.0.0
@@ -363,6 +364,13 @@ alphavox/
 │           ├── input_processing.py
 │           ├── tts.py           # ElevenLabs + fallbacks
 │           └── memory.py
+│
+├── experimental/               # R&D modules (not yet in core)
+│   ├── emotion_embedder.py
+│   ├── evolutionary_engine.py
+│   ├── kernel_fusion.py
+│   ├── lipsync.py
+│   └── ...
 │
 ├── .env                        # Your secrets (never commit this)
 ├── .env.example                # Template — safe to share
