@@ -102,9 +102,17 @@ const SYSTEM_STATUS = [
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 
+function loadSavedConfig(): AIConfig {
+  try {
+    const raw = localStorage.getItem('alphavox_ai_config');
+    return raw ? { ...DEFAULT_CONFIG, ...JSON.parse(raw) } : DEFAULT_CONFIG;
+  } catch {
+    return DEFAULT_CONFIG;
+  }
+}
+
 export default function AIControl() {
-  const savedAI = localStorage.getItem('alphavox_ai_config');
-  const [config, setConfig]   = useState<AIConfig>(savedAI ? JSON.parse(savedAI) : DEFAULT_CONFIG);
+  const [config, setConfig]   = useState<AIConfig>(loadSavedConfig);
   const [aiSaved, setAiSaved] = useState(false);
 
   // Voice state — seeded from audio.ts prefs
