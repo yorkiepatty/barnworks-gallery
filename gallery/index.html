@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Barnworks Gallery</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; font-family: 'Georgia', serif; }
+    canvas { display: block; }
+
+    /* ── Welcome overlay ── */
+    #overlay {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.92); z-index: 10;
+    }
+    #overlay-box { text-align: center; max-width: 520px; padding: 0 28px; }
+    #overlay h1 {
+      color: #f0ece4; font-size: 2.6rem; font-weight: normal;
+      letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    #overlay-sub {
+      color: #8a7a6a; font-size: 0.85rem; letter-spacing: 0.18em;
+      text-transform: uppercase; margin-bottom: 28px;
+    }
+    #overlay p { color: #999; font-size: 0.88rem; line-height: 2; margin-bottom: 38px; }
+    #overlay strong { color: #ccc; }
+    #start-btn {
+      padding: 13px 40px; background: #f0ece4; color: #1a1a1a;
+      border: none; cursor: pointer; font-size: 0.85rem;
+      font-family: 'Georgia', serif; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    #start-btn:hover { background: #fff; }
+
+    /* ── Crosshair ── */
+    #crosshair {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px; height: 16px;
+      pointer-events: none; z-index: 5; display: none;
+    }
+    #crosshair::before, #crosshair::after {
+      content: ''; position: absolute; background: rgba(255,255,255,0.7);
+    }
+    #crosshair::before { width: 1px; height: 100%; left: 50%; transform: translateX(-50%); }
+    #crosshair::after  { width: 100%; height: 1px; top: 50%; transform: translateY(-50%); }
+
+    /* ── Bottom hint ── */
+    #hint {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.35); font-size: 0.75rem; letter-spacing: 0.07em;
+      z-index: 5; display: none; text-align: center; pointer-events: none;
+    }
+
+    /* ── Interact hint ── */
+    #interact-hint {
+      position: fixed; bottom: 54px; left: 50%; transform: translateX(-50%);
+      background: rgba(10,8,6,0.75); color: #e8e0d8;
+      padding: 7px 22px; font-size: 0.78rem; letter-spacing: 0.07em;
+      border-radius: 20px; z-index: 5;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ── Detail panel ── */
+    #detail-panel {
+      position: fixed; right: 0; top: 0;
+      width: 420px; height: 100%;
+      background: #f5f0eb; z-index: 20;
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+    }
+    #detail-panel.open { transform: translateX(0); }
+    #panel-image { width: 100%; height: 280px; display: block; }
+    #panel-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      background: rgba(0,0,0,0.5); color: #fff;
+      border: none; cursor: pointer; font-size: 1rem;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    #panel-close:hover { background: rgba(0,0,0,0.75); }
+    #panel-body { padding: 28px 30px 52px; }
+    #panel-section-tag {
+      font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: #aaa; margin-bottom: 10px;
+    }
+    #panel-title  { font-size: 1.55rem; color: #1a1a1a; font-weight: normal; margin-bottom: 5px; }
+    #panel-year   { color: #999; font-size: 0.85rem; font-style: italic; margin-bottom: 18px; }
+    #panel-medium {
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: #666;
+      margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid #e0d8d0;
+    }
+    #panel-how-label {
+      font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: #bbb; margin-bottom: 12px;
+    }
+    #panel-description { font-size: 0.92rem; line-height: 1.8; color: #333; }
+
+    /* ── Teleport nav ── */
+    #nav-menu {
+      position: fixed; top: 14px; left: 14px; z-index: 8;
+      display: none;
+    }
+    #nav-toggle {
+      background: rgba(10,8,6,0.7); color: #e0d8cc;
+      border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+      padding: 8px 16px; font-family: 'Georgia', serif;
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 4px;
+    }
+    #nav-toggle:hover { background: rgba(30,25,20,0.85); }
+    #nav-list {
+      display: none; margin-top: 6px;
+      background: rgba(10,8,6,0.88); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px; padding: 6px 0; min-width: 220px;
+      backdrop-filter: blur(8px);
+    }
+    #nav-list.show { display: block; }
+    .nav-item {
+      display: block; width: 100%; text-align: left;
+      background: none; border: none; color: #d0c8bc;
+      padding: 9px 18px; font-family: 'Georgia', serif;
+      font-size: 0.78rem; letter-spacing: 0.06em; cursor: pointer;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .nav-divider {
+      height: 1px; background: rgba(255,255,255,0.08); margin: 4px 12px;
+    }
+
+    /* ── Mini-map ── */
+    #minimap {
+      position: fixed; bottom: 50px; right: 14px; z-index: 7;
+      width: 140px; height: 140px;
+      background: rgba(10,8,6,0.7); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px; display: none; overflow: hidden;
+    }
+
+    /* ── Contact button ── */
+    #contact-btn {
+      position: fixed; top: 14px; right: 14px; z-index: 8;
+      background: rgba(10,8,6,0.7); color: #e0d8cc;
+      border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+      padding: 8px 16px; font-family: 'Georgia', serif;
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 4px; display: none;
+    }
+    #contact-btn:hover { background: rgba(30,25,20,0.85); }
+
+    /* ── Contact panel ── */
+    #contact-panel {
+      position: fixed; inset: 0;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.85); z-index: 25;
+      backdrop-filter: blur(6px);
+    }
+    #contact-panel.open { display: flex; }
+    #contact-box {
+      background: #f5f0eb; border-radius: 12px; padding: 48px 44px;
+      max-width: 440px; width: 90%; text-align: center; position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    #contact-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px; background: rgba(0,0,0,0.08);
+      color: #666; border: none; cursor: pointer; border-radius: 50%;
+      font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
+    }
+    #contact-close:hover { background: rgba(0,0,0,0.15); color: #333; }
+    #contact-box h2 {
+      font-family: 'Georgia', serif; font-size: 1.6rem; font-weight: normal;
+      color: #2a2218; margin-bottom: 6px; letter-spacing: 0.04em;
+    }
+    #contact-box .contact-sub {
+      color: #8a7a6a; font-size: 0.78rem; letter-spacing: 0.15em;
+      text-transform: uppercase; margin-bottom: 28px;
+    }
+    #contact-box .contact-text {
+      color: #555; font-size: 0.92rem; line-height: 1.8; margin-bottom: 28px;
+    }
+    #contact-box .contact-email-link {
+      display: inline-block; padding: 13px 36px;
+      background: #2a2218; color: #f0ece4; text-decoration: none;
+      font-family: 'Georgia', serif; font-size: 0.88rem;
+      letter-spacing: 0.1em; border-radius: 6px;
+      transition: background 0.2s;
+    }
+    #contact-box .contact-email-link:hover { background: #3d3225; }
+    #contact-box .contact-email-raw {
+      display: block; margin-top: 14px; color: #8a7a6a;
+      font-size: 0.8rem; letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Welcome screen -->
+<div id="overlay">
+  <div id="overlay-box">
+    <h1>The Barnworks Gallery</h1>
+    <div id="overlay-sub">Handcrafted Art by P22</div>
+    <p>
+      <strong>WASD</strong> to walk &nbsp;&middot;&nbsp; <strong>Mouse</strong> to look<br>
+      <strong>Click</strong> any artwork for details<br>
+      <strong>M</strong> for gallery map &nbsp;&middot;&nbsp; <strong>ESC</strong> to close panels
+    </p>
+    <button id="start-btn">Enter Gallery</button>
+    <div style="margin-top:22px;">
+      <a href="mailto:yorkiepimp@gmail.com?subject=Barnworks%20Gallery%20Inquiry"
+         style="color:#8a7a6a; font-size:0.78rem; letter-spacing:0.1em; text-decoration:none;">
+        &#9993; Contact the Artist
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="crosshair"></div>
+<div id="hint">WASD to move &middot; Mouse to look &middot; Click artwork for details &middot; M for map</div>
+<div id="interact-hint">Click to view details</div>
+
+<!-- Detail panel -->
+<div id="detail-panel">
+  <canvas id="panel-image"></canvas>
+  <button id="panel-close">&times;</button>
+  <div id="panel-body">
+    <div id="panel-section-tag"></div>
+    <h2 id="panel-title"></h2>
+    <div id="panel-year"></div>
+    <div id="panel-medium"></div>
+    <div id="panel-how-label">How It Was Made</div>
+    <p id="panel-description"></p>
+  </div>
+</div>
+
+<!-- Nav menu -->
+<div id="nav-menu">
+  <button id="nav-toggle">&#9776; Gallery Map</button>
+  <div id="nav-list"></div>
+</div>
+
+<!-- Contact button -->
+<button id="contact-btn">&#9993; Contact</button>
+
+<!-- Contact panel -->
+<div id="contact-panel">
+  <div id="contact-box">
+    <button id="contact-close">&times;</button>
+    <h2>Get In Touch</h2>
+    <div class="contact-sub">Commissions &amp; Purchases Welcome</div>
+    <p class="contact-text">
+      Interested in a piece you see here? Want to commission something custom?
+      I'd love to hear from you! Every piece in this gallery is handcrafted
+      with care — reach out and let's talk.
+    </p>
+    <a class="contact-email-link" href="mailto:yorkiepimp@gmail.com?subject=Barnworks%20Gallery%20Inquiry">Send Me an Email</a>
+    <span class="contact-email-raw">yorkiepimp@gmail.com</span>
+  </div>
+</div>
+
+<!-- Mini-map -->
+<div id="minimap">
+  <canvas id="minimap-canvas" width="140" height="140"></canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ================================================================
+   THE BARNWORKS GALLERY — Multi-Wing Museum
+   Central lobby + 4 wing corridors (N / E / S / W)
+   ================================================================ */
+
+// ── Layout constants ──
+const LOBBY    = 14;
+const WING_W   = 7;
+const WING_H   = 5;
+const SEC_LEN  = 22;
+const WING_LEN = 44;
+const HL       = 7;
+const HW       = 3.5;
+const WE       = 51;
+const MARGIN   = 0.45;
+const EYE_H    = 1.75;
+const LOBBY_H  = 7;
+
+// ── Section definitions ──
+const sections = [
+  { name:"Chainsaw Carvings",       accent:"#C87941", sign:"#8B4513" },  // 0 north-A
+  { name:"Concrete & Garden Art",   accent:"#8A9A7B", sign:"#3A4A2B" },  // 1 north-B
+  { name:"Airbrush & Custom Paint", accent:"#4A9ECC", sign:"#003355" },  // 2 east-A
+  { name:"Holiday & Seasonal",      accent:"#CC4A4A", sign:"#551111" },  // 3 east-B
+  { name:"Resin & Wood",            accent:"#2EBFAA", sign:"#004040" },  // 4 west-A
+  { name:"Mixed Media & Sculpting", accent:"#9B6DBF", sign:"#2A0040" },  // 5 west-B
+  { name:"Dream Catchers",          accent:"#A87840", sign:"#2A1800" },  // 6 south-A
+  { name:"Jewelry & Metalwork",     accent:"#D4A830", sign:"#3A2800" },  // 7 south-B
+];
+
+// ── Teleport positions ──
+const teleports = [
+  { label:"Lobby",                   x:0,   z:0,   yaw:0 },
+  { label:"Chainsaw Carvings",       x:0,   z:-18, yaw:0 },
+  { label:"Concrete & Garden Art",   x:0,   z:-40, yaw:0 },
+  { label:"Airbrush & Custom Paint", x:18,  z:0,   yaw:-Math.PI/2 },
+  { label:"Holiday & Seasonal",      x:40,  z:0,   yaw:-Math.PI/2 },
+  { label:"Resin & Wood",            x:-18, z:0,   yaw:Math.PI/2 },
+  { label:"Mixed Media & Sculpting", x:-40, z:0,   yaw:Math.PI/2 },
+  { label:"Dream Catchers",          x:0,   z:18,  yaw:Math.PI },
+  { label:"Jewelry & Metalwork",     x:0,   z:40,  yaw:Math.PI },
+];
+
+// ================================================================
+//  ARTWORK DATA — sec 0-7 matches sections[]
+//  image: null = colored placeholder  |  "filename.jpg" = real photo
+// ================================================================
+const artworks = [
+
+  // ── SEC 0 : Chainsaw Carvings ──
+  { sec:0, title:"Eagle in Flight",       year:"2021", medium:"Chainsaw Carving",
+    color:"#8B6914", w:2.0, h:1.5, image:"20240720_214616.jpg",
+    description:"Carved from a single cedar log. The wings were roughed out with a chainsaw, then shaped with an angle grinder and detail bar. The feather texture was burned in with a torch and sealed with tung oil." },
+  { sec:0, title:"Whale Tail",            year:"2021", medium:"Chainsaw Carving",
+    color:"#1A1A2E", w:1.4, h:1.8, image:"IMG_20211117_150908617.jpg",
+    description:"A whale tail rising from a stump base, carved from a cedar log with a chainsaw. The glossy black finish is multiple coats of marine spar urethane over torch-darkened wood." },
+  { sec:0, title:"Fish on Stump",         year:"2021", medium:"Chainsaw Carving",
+    color:"#6B4226", w:1.6, h:1.4, image:"IMG_20211103_155742073.jpg",
+    description:"A leaping fish carved from a standing stump with a chainsaw. Detail work done with a die grinder and burr bits. Finished with linseed oil and spar urethane." },
+  { sec:0, title:"Fish Carving - Indoor",  year:"2021", medium:"Chainsaw Carving",
+    color:"#6B5226", w:1.6, h:1.2, image:"IMG_20211117_151119469.jpg",
+    description:"A detailed fish carved from a log round with a chainsaw, showing off the scale texture work. Carved with detail bars and burr bits, then torched for contrast." },
+  { sec:0, title:"Owl Head",              year:"2021", medium:"Chainsaw Carving",
+    color:"#8B7940", w:1.3, h:1.5, image:"IMG_20211117_150811266.jpg",
+    description:"An owl face emerging from a short log, carved with a chainsaw. The big round eyes and feather detail are carved with a detail bar and die grinder." },
+  { sec:0, title:"Eagle - Full Body",     year:"2021", medium:"Chainsaw Carving",
+    color:"#7A6530", w:1.5, h:2.0, image:"IMG_20211117_150749634.jpg",
+    description:"A full-body eagle perched on a log base, carved with a chainsaw. The talons grip the base while the wings are folded back. Torch-burned for contrast and sealed." },
+  { sec:0, title:"Bear Relief Carving",   year:"2021", medium:"Chainsaw Carving",
+    color:"#7A6A50", w:1.8, h:1.2, image:"IMG_20211103_155658925.jpg",
+    description:"A bear carved in relief into a flat log slab. The figure emerges from the natural wood surface using shallow chainsaw cuts and grinding." },
+  { sec:0, title:"Owl Garden Sculpture",  year:"2024", medium:"Chainsaw Carving",
+    color:"#6B5030", w:1.5, h:1.6, image:"20240720_214638.jpg",
+    description:"A chunky owl figure carved from a thick log with a chainsaw. Sitting in the garden among the other carvings. Natural finish lets the wood grain show through." },
+  { sec:0, title:"Large Carving In Progress", year:"2021", medium:"Chainsaw Carving",
+    color:"#C8A060", w:1.5, h:2.0, image:"IMG_20211121_022024639.jpg",
+    description:"A large chainsaw carving in the workshop, still in progress. The rough shape has been blocked out with the big saw, ready for detail work with smaller bars and grinders." },
+  { sec:0, title:"Flat Carved Wood Figure",  year:"2021", medium:"Chainsaw Carving",
+    color:"#7A6A40", w:1.6, h:1.2, image:"IMG_20211117_150823947.jpg",
+    description:"A flat carved wood piece outdoors — an abstract figure emerging from a split cedar log. Torched for dark contrast against the pale natural grain." },
+  { sec:0, title:"Abstract Wood Slab Carving", year:"2021", medium:"Chainsaw Carving",
+    color:"#8B6A30", w:1.6, h:1.2, image:"IMG_20211117_150837661.jpg",
+    description:"An abstract carved face or figure cut flat into a wood slab, showing strong grain contrasting with the torch-burned areas. Part of the outdoor carving garden." },
+
+  // ── SEC 1 : Concrete & Garden Art ──
+  { sec:1, title:"Minion Figures",        year:"2021", medium:"Concrete & Paint",
+    color:"#FFD700", w:1.5, h:1.5, image:"39681fa6-e03e-4391-bba4-27b814f09c02.jpg",
+    description:"A trio of Minion characters sculpted from concrete over wire armatures. Hand-painted with outdoor acrylics in their signature yellow and blue. Sealed for garden display." },
+  { sec:1, title:"Mushroom Houses",       year:"2024", medium:"Concrete Sculpture",
+    color:"#C0392B", w:1.5, h:1.5, image:null,
+    description:"Whimsical mushroom fairy houses sculpted from concrete over wire armatures. Each one is hand-shaped and painted with outdoor acrylic paints, then sealed with concrete sealer for year-round garden display." },
+  { sec:1, title:"Carved Wooden Spoons",  year:"2024", medium:"Wood Carving",
+    color:"#C8A060", w:1.4, h:1.5, image:"20240820_130438.jpg",
+    description:"A set of hand-carved wooden spoons and utensils displayed in a carved wood holder. Each piece is shaped from solid wood with carving tools, sanded smooth, and finished with food-safe oil." },
+  { sec:1, title:"Garden Figures Collection", year:"2022", medium:"Concrete & Paint",
+    color:"#3A6A2A", w:1.6, h:1.4, image:"IMG_20220307_182709657.jpg",
+    description:"A shelf of hand-sculpted concrete garden figures — gnomes, a Mickey Mouse, a ladybug, and more. Each one shaped over wire armature, painted with outdoor acrylics and sealed." },
+  { sec:1, title:"Sea Creature Sculptures", year:"2022", medium:"Concrete Sculpture",
+    color:"#1A4A6A", w:1.6, h:1.4, image:"IMG_20220307_182736572.jpg",
+    description:"A collection of sculpted sea animals — orca whale, dolphin, manatee — all built over wire armatures with concrete and painted by hand. Part of an ongoing sculpture garden series." },
+  { sec:1, title:"Mushroom House Village", year:"2022", medium:"Concrete Sculpture",
+    color:"#CC3A3A", w:1.5, h:1.4, image:"IMG_20220307_182752822.jpg",
+    description:"A village of whimsical mushroom houses in red, purple, teal, and white, each with hand-sculpted details. Built up from concrete over wire frames with acrylic paint details." },
+  { sec:1, title:"Sea Turtle Garden Piece", year:"2023", medium:"Concrete & Paint",
+    color:"#5A8A3A", w:1.5, h:1.3, image:"IMG_20230412_091140103.jpg",
+    description:"A detailed sea turtle sculpture in green and brown, built over wire armature with concrete. The shell pattern is carefully painted and sealed for outdoor garden display." },
+
+  // ── SEC 2 : Airbrush & Custom Paint ──
+  { sec:2, title:"Moon Rise",             year:"2021", medium:"Airbrush on Board",
+    color:"#0D1B2A", w:1.5, h:1.4, image:"IMG_20211230_204824175.jpg",
+    description:"A luminous full moon rising with clouds, airbrushed on prepared board. The glow effect comes from many thin translucent layers of white over deep blue-black." },
+  { sec:2, title:"Planets & Space",       year:"2022", medium:"Airbrush on Canvas",
+    color:"#0A0A2A", w:1.6, h:1.5, image:"IMG_20220103_202941671.jpg",
+    description:"Two planets hanging in deep space with a bright star, airbrushed on canvas. Stars created with splatter technique, planets built up with careful layering of whites and grays." },
+  { sec:2, title:"Lightning Storm",       year:"2022", medium:"Airbrush on Slate",
+    color:"#1A1A3A", w:1.5, h:1.4, image:"IMG_20220106_144823680.jpg",
+    description:"Electric blue lightning bolts crackling across a dark stormy sky, airbrushed onto natural slate. The lightning glows with careful white and cyan layers over the dark stone." },
+  { sec:2, title:"Skull with Lightning",  year:"2022", medium:"Airbrush on Slate",
+    color:"#1A1A2A", w:1.5, h:1.6, image:"IMG_20220109_172647444_HDR.jpg",
+    description:"A dramatic skull with blue lightning bolts radiating outward, airbrushed on natural slate. The skull emerges from darkness with careful shading in white and gray." },
+  { sec:2, title:"Skull in Flames",       year:"2022", medium:"Airbrush on Slate",
+    color:"#8B2500", w:1.4, h:1.6, image:"IMG_20220114_141503363.jpg",
+    description:"A skull with flames erupting upward, airbrushed onto thick natural slate. Orange, red and yellow flames lick around the skull, all done freehand with Createx airbrush paints." },
+  { sec:2, title:"Night Fairy Silhouette",year:"2022", medium:"Airbrush on Canvas",
+    color:"#5050AA", w:1.4, h:1.4, image:"IMG_20220122_124510615.jpg",
+    description:"A fairy silhouetted against a glowing moon and starry sky, airbrushed on canvas. The background is soft blues and purples with the moon providing the backlight." },
+  { sec:2, title:"Believe Fairy",         year:"2022", medium:"Airbrush on Canvas",
+    color:"#C060A0", w:1.5, h:1.4, image:"IMG_20220118_191412354.jpg",
+    description:"A colorful fairy with detailed lace-pattern wings and the word Believe, airbrushed on canvas. Pink and purple background with a green and blue fairy figure." },
+  { sec:2, title:"Zero Skull",            year:"2022", medium:"Airbrush on Slate",
+    color:"#2C0A3A", w:1.3, h:1.5, image:"IMG_20220124_103841215.jpg",
+    description:"A skull with skeleton hands airbrushed onto natural slate with the text Zero. The dark stone becomes the background, with the glowing skull painted in layers of white." },
+  { sec:2, title:"Orca Aurora",           year:"2022", medium:"Airbrush on Board",
+    color:"#0A2A4A", w:1.6, h:1.5, image:"IMG_20220117_183130554.jpg",
+    description:"An orca whale leaping through colorful aurora borealis lights, airbrushed on board. Neon greens, blues, and purples swirl around the black and white whale against deep space." },
+  { sec:2, title:"Moonscape - Planets",   year:"2022", medium:"Airbrush on Canvas",
+    color:"#0D1B2A", w:1.5, h:1.6, image:"IMG_20220127_190948927.jpg",
+    description:"Two planets and a bright star hanging in the cosmos with wispy clouds, airbrushed on canvas. Built up from many thin layers to get the luminous glow of the planets." },
+  { sec:2, title:"Twin Suns Landscape",  year:"2022", medium:"Airbrush on Paper",
+    color:"#3060A0", w:1.4, h:1.5, image:"IMG_20220207_224039151.jpg",
+    description:"Two glowing orange and yellow suns hovering above abstract mountain silhouettes, airbrushed on paper. A moody blue atmosphere surrounds the warm orbs in this abstract cosmic landscape." },
+  { sec:2, title:"Yorkie Portrait",      year:"2022", medium:"Airbrush on Paper",
+    color:"#C8A878", w:1.4, h:1.5, image:"IMG_20220211_161404664.jpg",
+    description:"A portrait of a Yorkshire terrier with pink hair bows, airbrushed on paper. The fine fur texture is built up with many thin layers of brown, black, and white to capture the silky coat." },
+  { sec:2, title:"Screaming Ghost",      year:"2022", medium:"Airbrush on Paper",
+    color:"#1A1A1A", w:1.3, h:1.6, image:"IMG_20220220_194718126.jpg",
+    description:"A haunting ghost figure with an open fire-mouth screaming, airbrushed in stark black and white with red and orange for the flames. A dark graphic piece full of energy." },
+  { sec:2, title:"Princess Mononoke",    year:"2022", medium:"Airbrush on Canvas",
+    color:"#8A4A5A", w:1.5, h:1.6, image:"IMG_20220220_194758645.jpg",
+    description:"San from Princess Mononoke with her white wolf companion, airbrushed on canvas. The warrior's red face markings pop against the pale wolf. Inspired by the Miyazaki film." },
+  { sec:2, title:"Skull & Tall Flames",  year:"2022", medium:"Airbrush on Slate",
+    color:"#4A1A1A", w:1.4, h:1.6, image:"IMG_20220113_051114423.jpg",
+    description:"A leering skull beneath a tower of red, orange, and yellow flames on black slate. The skull looks sideways with a wild eye while fire erupts above, airbrushed freehand." },
+
+  // ── SEC 3 : Holiday & Seasonal ──
+  { sec:3, title:"Green Tinsel Tree - Star", year:"2021", medium:"Mixed Media Sculpture",
+    color:"#1A8B1A", w:1.3, h:1.8, image:"IMG_20211116_195556932.jpg",
+    description:"A tabletop Christmas tree built from a wire cone frame wrapped in green tinsel garland. Decorated with mini lights and bead garlands, topped with a crystal star." },
+  { sec:3, title:"Peacock Feather Tree",  year:"2021", medium:"Mixed Media Sculpture",
+    color:"#6A8A4A", w:1.3, h:1.8, image:"IMG_20211116_185750650.jpg",
+    description:"A unique Christmas tree made with silver tinsel and decorated with real peacock feathers. The iridescent feather eyes catch the light beautifully against the silver garland." },
+  { sec:3, title:"Red Tinsel Tree",       year:"2021", medium:"Mixed Media Sculpture",
+    color:"#CC1A1A", w:1.3, h:1.8, image:"IMG_20211116_195440732.jpg",
+    description:"A bold red tinsel Christmas tree with a light-up crystal star topper. Decorated with ornaments and bead garlands over the red and copper tinsel." },
+  { sec:3, title:"Blue Tinsel Tree",      year:"2021", medium:"Mixed Media Sculpture",
+    color:"#1A1ACC", w:1.3, h:1.8, image:"IMG_20211116_190443722.jpg",
+    description:"A deep blue tinsel Christmas tree decorated with ornaments and a pink pom-pom accent. Each tree is handmade on a wire cone frame." },
+  { sec:3, title:"Red & Pink Tinsel Tree",year:"2021", medium:"Mixed Media Sculpture",
+    color:"#CC4466", w:1.3, h:1.8, image:"IMG_20211116_185906992.jpg",
+    description:"A candy-cane inspired Christmas tree in red and pink striped tinsel. Decorated with colorful mini ornaments." },
+  { sec:3, title:"Blue & Green Tinsel Tree",year:"2021", medium:"Mixed Media Sculpture",
+    color:"#2A8A4A", w:1.3, h:1.8, image:"IMG_20211115_202834438.jpg",
+    description:"A two-tone Christmas tree wrapped in alternating blue and green tinsel with poinsettia flowers and ornaments. Handmade on a wire cone frame." },
+  { sec:3, title:"Spooky Tree Candy Bowl",year:"2021", medium:"Papier-Mache & Mixed Media",
+    color:"#3A2A1A", w:1.5, h:1.6, image:"IMG_20211025_181329674.jpg",
+    description:"A haunted tree candy bowl for Halloween, built with papier-mache over a wire armature. The bark texture is sculpted and painted to look like real wood. LED eyes glow blue from inside." },
+  { sec:3, title:"Ghost with Green Eyes", year:"2021", medium:"Papier-Mache",
+    color:"#E8E8E0", w:1.2, h:1.6, image:"IMG_20211028_161659879.jpg",
+    description:"A spooky papier-mache ghost with glowing green eyes, built over a wire frame. Layers of paper and paste create the flowing shape. Painted white with green accent eyes." },
+  { sec:3, title:"Dragon Carved Pumpkin", year:"2021", medium:"Pumpkin Carving",
+    color:"#E8A020", w:1.4, h:1.4, image:"IMG_20211028_034805669.jpg",
+    description:"A real pumpkin carved with an intricate dragon design. The skin is carefully cut away at different depths to create a relief effect that glows when lit from inside." },
+  { sec:3, title:"Mickey Mesh Wreath",    year:"2021", medium:"Deco Mesh & Wire",
+    color:"#CC1A1A", w:1.4, h:1.4, image:"IMG_20211119_201343559.jpg",
+    description:"A Mickey Mouse shaped wreath made from deco mesh and wire frame. Red and white mesh is ruffled and attached to a custom-bent wire form with a stuffed Mickey in the center." },
+  { sec:3, title:"Red Deco Mesh Wreath",  year:"2021", medium:"Deco Mesh & Wire",
+    color:"#AA2222", w:1.4, h:1.4, image:"IMG_20211121_022036633.jpg",
+    description:"An elegant red and gold deco mesh wreath with metallic accents. Ruffled mesh on a wire frame with gold ornament balls and bead garland woven through." },
+
+  // ── SEC 4 : Resin & Wood ──
+  { sec:4, title:"River Table - Blue",    year:"2024", medium:"Epoxy Resin & Live Edge Wood",
+    color:"#1A6B8A", w:2.0, h:1.3, image:"20240720_214500.jpg",
+    description:"A live-edge wood slab split down the middle with a deep blue epoxy resin river running through the center. The wood is sanded and finished with oil, the resin polished crystal clear." },
+  { sec:4, title:"River Table - Deep Blue",year:"2024", medium:"Epoxy Resin & Live Edge Wood",
+    color:"#1A3A8A", w:2.0, h:1.3, image:"20240720_214545.jpg",
+    description:"Another angle of the stunning blue resin river table. Multiple pours build up depth with the deep blue resin flowing between the natural live-edge wood slabs." },
+  { sec:4, title:"Two River Tables",      year:"2021", medium:"Epoxy Resin & Live Edge Wood",
+    color:"#1A8A7A", w:2.0, h:1.3, image:"IMG_20211103_155253074.jpg",
+    description:"A pair of resin river tables side by side — one with turquoise green river, one with deep blue. Each made from live-edge wood slabs with colored epoxy resin." },
+  { sec:4, title:"Moon & Stars on Wood",  year:"2021", medium:"Epoxy Resin & Wood Slab",
+    color:"#8A2020", w:1.5, h:1.5, image:"IMG_20211103_155518202.jpg",
+    description:"A crescent moon and stars cut into a natural wood slab and filled with glowing resin. The deep red resin contrasts beautifully with the warm cedar wood. Other resin pieces visible nearby." },
+  { sec:4, title:"Turtle & Tree Glow Art",year:"2021", medium:"Epoxy Resin & Wood",
+    color:"#90C890", w:1.6, h:1.3, image:"IMG_20211108_195644440.jpg",
+    description:"A sea turtle and pine tree design cut into wood and filled with glow-in-the-dark resin. Under regular light they have a soft green look; in the dark they glow brilliantly." },
+  { sec:4, title:"Scorpion Wood Cutout",  year:"2021", medium:"Wood & Resin",
+    color:"#8B6040", w:1.4, h:1.2, image:"IMG_20211108_195656977.jpg",
+    description:"A scorpion shape cut from a cedar wood slab, ready for resin fill. The intricate cutout shows off the beautiful grain of the wood." },
+  { sec:4, title:"Resin Tray Set",        year:"2025", medium:"Epoxy Resin",
+    color:"#4A8A60", w:1.5, h:1.3, image:"20250309_030917.jpg",
+    description:"A resin rolling tray set with a leaf design, matching ashtray, and accessories. Cast in colored resin with embedded decorative elements." },
+  { sec:4, title:"Resin Nesting Trays",   year:"2025", medium:"Epoxy Resin",
+    color:"#6A8A50", w:1.4, h:1.2, image:"20250309_031123.jpg",
+    description:"Nested oval resin trays in swirled colors with matching round piece. Each one cast and polished by hand." },
+  { sec:4, title:"Grace Name Sign",       year:"2024", medium:"Resin & LED",
+    color:"#40D0D0", w:1.5, h:1.4, image:"20241113_140146.jpg",
+    description:"A custom name sign spelling Grace in resin with heart cutouts. Made with turquoise-tinted resin and backlit for a glowing effect. Custom gift piece." },
+  { sec:4, title:"Ocean Life Glow Panel", year:"2023", medium:"Epoxy Resin & Wood",
+    color:"#1A6A6A", w:2.0, h:1.2, image:"IMG_20230422_212820731.jpg",
+    description:"A live-edge wood slab with dolphin, tropical fish, turtle, and starfish cutouts filled with glow-in-the-dark resin. Under normal light they look pale green — in the dark they glow brilliantly." },
+  { sec:4, title:"Celestial Glow Panel",  year:"2023", medium:"Epoxy Resin & Wood",
+    color:"#3A2A6A", w:1.8, h:1.1, image:"IMG_20230422_212856209.jpg",
+    description:"A cedar slab with a crescent moon, stars, and dots cut out and filled with glow-in-the-dark resin. The natural reddish cedar contrasts beautifully with the glowing green resin." },
+  { sec:4, title:"Snoopy Glow Panel",     year:"2023", medium:"Epoxy Resin & Wood",
+    color:"#C8A860", w:1.5, h:1.3, image:"IMG_20230422_212914439.jpg",
+    description:"Snoopy's face traced and cut into a light pine board with the grooves filled with glow resin. The simple wooden panel glows softly with the cartoon beagle's outline in the dark." },
+  { sec:4, title:"Blue Ocean Slab Table", year:"2024", medium:"Epoxy Resin & Wood",
+    color:"#1A8ABF", w:2.0, h:1.4, image:"IMG_20240818_071551319.jpg",
+    description:"A stunning table top with multiple live-edge wood slices set into a sea of vibrant turquoise blue epoxy resin. The natural bark edges contrast against the glossy polished blue." },
+  { sec:4, title:"Russell & Theresa Heart Sign", year:"2025", medium:"Resin & Glow Wood",
+    color:"#8B3A2A", w:1.5, h:1.5, image:"IMG_20250302_132244179.jpg",
+    description:"A heart-shaped live-edge wood slab with the names Russell and Theresa cut out and filled with glow-in-the-dark resin. In the light the letters appear white; in the dark they glow blue-green." },
+  { sec:4, title:"Cannabis Leaf Tray Set", year:"2025", medium:"Epoxy Resin",
+    color:"#3A6A2A", w:1.6, h:1.3, image:"IMG_20250306_135210817.jpg",
+    description:"A custom resin rolling tray with a raised cannabis leaf design in green, plus matching accessories — a pipe, grinder, and ashtray — all cast in silver-blue and green resin." },
+
+  // ── SEC 5 : Mixed Media & Sculpting ──
+  { sec:5, title:"Beaded Bracelets - Dark",year:"2024", medium:"Seed Bead Loom Work",
+    color:"#1A1A2A", w:1.5, h:1.3, image:"20241005_165700.jpg",
+    description:"A collection of seed bead loom bracelets in dark colorways — black, red, blue, and gold with geometric and symbolic patterns. Each one is woven bead by bead on a loom with clasps added." },
+  { sec:5, title:"Beaded Bracelets - Bright",year:"2024", medium:"Seed Bead Loom Work",
+    color:"#E080A0", w:1.5, h:1.3, image:"20241020_205834.jpg",
+    description:"A collection of colorful seed bead loom bracelets — pink, green, white, gold with intricate patterns including crosses, flowers, and chevrons. Each painstakingly woven bead by bead." },
+  { sec:5, title:"Resin Coasters & Pop Sockets",year:"2025", medium:"Epoxy Resin & Glitter",
+    color:"#80A040", w:1.4, h:1.3, image:"20250227_193353.jpg",
+    description:"Handmade resin coasters and phone pop sockets with embedded peacock feathers, glitter, and decorative elements. Each piece is unique with swirled colors and sparkle." },
+  { sec:5, title:"Resin Paddles - Bright", year:"2025", medium:"Epoxy Resin",
+    color:"#E060A0", w:1.4, h:1.3, image:"20250227_193719.jpg",
+    description:"Colorful resin paddles and bottle openers in bright pink, blue, and green with embedded text designs. Cast in silicone molds with custom color mixes." },
+  { sec:5, title:"Resin Paddles - Marbled",year:"2025", medium:"Epoxy Resin",
+    color:"#8A6040", w:1.4, h:1.3, image:"20250309_030950.jpg",
+    description:"Resin paddles and bottle openers in marbled earth tones and metallic finishes. Each one has a unique swirled color pattern created during the pour." },
+  { sec:5, title:"Resin Angel Glow",      year:"2021", medium:"Epoxy Resin",
+    color:"#C0D080", w:1.2, h:1.4, image:"3fe5e848-1ba4-46d9-8024-af494d552c7b.jpg",
+    description:"A cross or angel shape cast in glow-in-the-dark resin. Under light it appears pale green; in the dark it glows with a soft ethereal light." },
+  { sec:5, title:"Mushroom Gnome Sculpture", year:"2024", medium:"Concrete & Papier-Mache",
+    color:"#5A6A5A", w:1.2, h:1.6, image:"IMG_20241218_014311483.jpg",
+    description:"A mushroom-capped gnome figure sculpted over wire armature with concrete and papier-mache. Shown fresh from the last coat — still wet and gray before being painted and sealed." },
+  { sec:5, title:"Garden Gnome Sculpture", year:"2024", medium:"Concrete & Papier-Mache",
+    color:"#5A5A6A", w:1.1, h:1.6, image:"IMG_20241218_014510340.jpg",
+    description:"A gnome or elf figure sculpted over wire with layered concrete and papier-mache. The hat and robed body are shaped layer by layer, ready to paint. Part of a custom garden gnome series." },
+  { sec:5, title:"Minions & Baby Elephant", year:"2025", medium:"Concrete & Paint",
+    color:"#FFD070", w:1.5, h:1.4, image:"IMG_20250306_045242801.jpg",
+    description:"Three concrete Minion figures alongside a small papier-mache baby elephant in progress. The Minions are painted in their signature yellow and blue; the elephant is awaiting its coat." },
+  { sec:5, title:"Silver & Gold Panel",   year:"2025", medium:"Papier-Mache & Paint",
+    color:"#A0A080", w:1.5, h:1.3, image:"IMG_20250306_130600600.jpg",
+    description:"An oval decorative wall panel with a raised swirling pattern finished in silver and gold metallic paint. Built up from papier-mache with the pattern sculpted by hand before painting." },
+  { sec:5, title:"Painted Rock - Blue & Pink", year:"2025", medium:"Rock & Acrylic",
+    color:"#3A5A7A", w:1.3, h:1.2, image:"IMG_20250306_131905904.jpg",
+    description:"A found rock painted with a geometric blue background and a pink abstract design with gold accent lines. The natural rock shape becomes part of the composition." },
+  { sec:5, title:"Painted Rock - Blue & Red", year:"2025", medium:"Rock & Acrylic",
+    color:"#3A4A8A", w:1.3, h:1.2, image:"IMG_20250306_131912332.jpg",
+    description:"A chunky rock with deep blue background, gold trim, and a red textured center panel. The layered colors give it a jewel-like quality, sealed for display." },
+  { sec:5, title:"Copper Glitter Cauldron", year:"2025", medium:"Epoxy Resin & Glitter",
+    color:"#8B4A1A", w:1.2, h:1.3, image:"IMG_20250315_075654718.jpg",
+    description:"A small resin cauldron cast in holographic copper and orange glitter. The metallic sparkle shifts colors in different light — warm orange in sunlight, fiery red indoors." },
+  { sec:5, title:"Red Glitter Heart Trays", year:"2025", medium:"Epoxy Resin & Glitter",
+    color:"#CC1A2A", w:1.4, h:1.2, image:"IMG_20250315_075720795.jpg",
+    description:"A set of two heart-shaped resin trays in deep red and rose holographic glitter — one larger tray and one round. Both polished to a high gloss finish." },
+  { sec:5, title:"Blue Glitter Stash Jar", year:"2025", medium:"Epoxy Resin & Glitter",
+    color:"#2A3ABF", w:1.2, h:1.4, image:"IMG_20250315_080654728.jpg",
+    description:"A hexagonal resin stash jar with matching lid, cast in deep royal blue with iridescent holographic glitter. The threads are formed in the resin pour for a perfect screw fit." },
+  { sec:5, title:"Peach Gnome Resin Set", year:"2025", medium:"Epoxy Resin",
+    color:"#E0A080", w:1.4, h:1.3, image:"IMG_20250615_004202812.jpg",
+    description:"A pearlescent peach resin set — a round tray with concave wells and a matching gnome figure. Cast in warm rose-gold pearl resin that catches light beautifully." },
+
+  // ── SEC 6 : Dream Catchers ──
+  { sec:6, title:"Large Hoop Dream Catcher",  year:"2024", medium:"Metal Hoop & Cord",
+    color:"#A0522D", w:1.5, h:1.8, image:"20240720_214703.jpg",
+    description:"An oversized dream catcher using a large metal hoop. The intricate web pattern uses waxed thread. Hanging in the workshop barn among the other handmade pieces." },
+  { sec:6, title:"Dream Catcher Close-Up",year:"2024", medium:"Metal Hoop & Cord",
+    color:"#8B6A40", w:1.5, h:1.6, image:"20240720_214709.jpg",
+    description:"A closer view of the large dream catcher showing the detailed web weaving and bead work. Each strand is carefully knotted to create the traditional web pattern." },
+  { sec:6, title:"Triple Ring with Skull", year:"2024", medium:"Metal, Thread & Feathers",
+    color:"#6B4423", w:1.5, h:1.6, image:"20240720_214727.jpg",
+    description:"A dramatic multi-ring dream catcher with an animal skull centerpiece, decorated with feathers and colorful beads. The rings are wrapped in cord with intricate web patterns." },
+
+  // ── SEC 7 : Jewelry & Metalwork ──
+  { sec:7, title:"Turquoise Ring Collection", year:"2026", medium:"Sterling Silver & Turquoise",
+    color:"#40E0D0", w:1.5, h:1.2, image:"20260506_161428.jpg",
+    description:"A collection of handmade sterling silver rings set with natural turquoise and opal stones. Each stone is unique — from deep blue-green turquoise to fiery opals. Hand-shaped bezels and prong settings." },
+  { sec:7, title:"Ring Collection - Angle 2", year:"2026", medium:"Sterling Silver & Turquoise",
+    color:"#40D0C0", w:1.5, h:1.2, image:"20260506_161443.jpg",
+    description:"Another view of the ring collection showing the variety of stones and settings. Turquoise cabochons, opals, and a delicate chain necklace pendant all handmade in sterling silver." },
+  { sec:7, title:"Turquoise Cross Ring",  year:"2026", medium:"Sterling Silver & Turquoise",
+    color:"#008B8B", w:1.0, h:1.2, image:"20260511_090039.jpg",
+    description:"A bold cross-shaped ring in hammered sterling silver with a large oval turquoise cabochon at the center. The silver is textured with hammer marks for a rustic artisan look." },
+  { sec:7, title:"Turquoise Turtle Ring", year:"2026", medium:"Sterling Silver & Turquoise",
+    color:"#20A0A0", w:1.0, h:1.2, image:"20260511_212242.jpg",
+    description:"A sterling silver ring shaped like a sea turtle with a turquoise shell. The turtle form is hand-shaped from silver sheet and wire with a natural turquoise cabochon set as the shell." },
+  { sec:7, title:"Ethiopian Opal Ring",   year:"2026", medium:"Sterling Silver & Opal",
+    color:"#E0E8D0", w:1.0, h:1.2, image:"20260428_212119.jpg",
+    description:"A large Ethiopian fire opal set in a sterling silver wire-wrapped ring. The stone flashes with brilliant colors — green, orange, red, and blue fire dancing inside the translucent stone." },
+  { sec:7, title:"Opal Ring - Wire Wrapped", year:"2026", medium:"Sterling Silver & Opal",
+    color:"#D0F0E0", w:1.0, h:1.2, image:"20260428_212125.jpg",
+    description:"A raw Ethiopian opal cradled in an intricate sterling silver wire wrap. The prong-style setting lets light through the stone to show off its brilliant green and yellow fire." },
+  { sec:7, title:"Silver Twist Band",     year:"2026", medium:"Sterling Silver",
+    color:"#C0C0C0", w:1.0, h:0.8, image:"20260428_212131.jpg",
+    description:"A delicate sterling silver band with an interlocking twist design. Formed from silver wire, shaped, soldered, and polished by hand. A simple elegant everyday ring." },
+  { sec:7, title:"Opal Ring - Side View", year:"2026", medium:"Sterling Silver & Opal",
+    color:"#E0D8C0", w:1.0, h:1.2, image:"20260428_212139.jpg",
+    description:"A side view of the large Ethiopian opal ring showing the brilliant fire play from a different angle. The translucent stone catches light from every direction." },
+];
+
+// ================================================================
+//  THREE.JS SETUP
+// ================================================================
+const scene    = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0806);
+scene.fog      = new THREE.Fog(0x0a0806, 30, 65);
+
+const camera   = new THREE.PerspectiveCamera(68, innerWidth/innerHeight, 0.1, 200);
+camera.position.set(0, EYE_H, 48);
+camera.rotation.order = 'YXZ';
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+// Ambient
+scene.add(new THREE.AmbientLight(0xfff8f0, 0.45));
+
+// ── Shared materials ──
+const floorMat  = new THREE.MeshStandardMaterial({ color:0x2a2218, roughness:0.9  });
+const ceilMat   = new THREE.MeshStandardMaterial({ color:0x1a1814, roughness:0.95 });
+const wallMat   = new THREE.MeshStandardMaterial({ color:0x3a3228, roughness:0.88 });
+const lobbyWall = new THREE.MeshStandardMaterial({ color:0x4a3e30, roughness:0.82 });
+const lobbyFlr  = new THREE.MeshStandardMaterial({ color:0x3a3020, roughness:0.85 });
+const frameMat  = new THREE.MeshStandardMaterial({ color:0x8B7355, roughness:0.6  });
+const baseMat   = new THREE.MeshStandardMaterial({ color:0x2a2418, roughness:0.9  });
+const railMat   = new THREE.MeshStandardMaterial({ color:0x3a3228, roughness:0.85 });
+const pillarMat = new THREE.MeshStandardMaterial({ color:0x5a4e3a, roughness:0.7  });
+const archMat   = new THREE.MeshStandardMaterial({ color:0x4a3e30, roughness:0.75 });
+
+// Raycaster
+const raycaster = new THREE.Raycaster();
+raycaster.far   = 6;
+const mouse     = new THREE.Vector2(0, 0);
+const paintingMeshes = [];
+const paintingData   = [];
+
+// ================================================================
+//  HELPER: canvas text sign
+// ================================================================
+function makeSignTexture(text, bgColor, w, h, fontSize) {
+  const c   = document.createElement('canvas');
+  c.width   = w || 512; c.height = h || 64;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle   = '#f0ece4';
+  ctx.font        = '600 '+(fontSize||28)+'px Georgia';
+  ctx.textAlign   = 'center';
+  ctx.textBaseline= 'middle';
+  ctx.fillText(text, c.width/2, c.height/2 + 2);
+  return new THREE.CanvasTexture(c);
+}
+
+// ================================================================
+//  BUILD LOBBY
+// ================================================================
+function buildLobby() {
+  // Floor
+  const f = new THREE.Mesh(new THREE.PlaneGeometry(LOBBY, LOBBY), lobbyFlr);
+  f.rotation.x = -Math.PI/2; f.receiveShadow = true;
+  scene.add(f);
+  // Ceiling
+  const c = new THREE.Mesh(new THREE.PlaneGeometry(LOBBY, LOBBY), ceilMat);
+  c.rotation.x = Math.PI/2; c.position.y = LOBBY_H;
+  scene.add(c);
+
+  // Walls — each side has two slabs flanking the wing opening
+  const sideW = (LOBBY - WING_W) / 2;
+  const wh    = LOBBY_H;
+  const pairs = [
+    // [wallX, wallZ, rotY] for the two flanking slabs + arch header
+    { nx:0, nz:-HL, ry:0,          left:[-HL+sideW/2, 0, -HL], right:[HL-sideW/2, 0, -HL] },
+    { nx:0, nz: HL, ry:0,          left:[-HL+sideW/2, 0,  HL], right:[HL-sideW/2, 0,  HL] },
+    { nx: HL, nz:0, ry:Math.PI/2,  left:[HL, 0, -HL+sideW/2], right:[HL, 0, HL-sideW/2]   },
+    { nx:-HL, nz:0, ry:Math.PI/2,  left:[-HL,0,-HL+sideW/2],  right:[-HL,0,HL-sideW/2]    },
+  ];
+  pairs.forEach(p => {
+    // Left slab
+    const lm = new THREE.Mesh(new THREE.PlaneGeometry(sideW, wh), lobbyWall);
+    lm.position.set(p.left[0], wh/2, p.left[2]);
+    lm.rotation.y = p.ry; lm.receiveShadow = true; scene.add(lm);
+    // Right slab
+    const rm = new THREE.Mesh(new THREE.PlaneGeometry(sideW, wh), lobbyWall);
+    rm.position.set(p.right[0], wh/2, p.right[2]);
+    rm.rotation.y = p.ry; rm.receiveShadow = true; scene.add(rm);
+    // Arch header
+    const hdr = new THREE.Mesh(new THREE.BoxGeometry(
+      p.ry === 0 ? WING_W : 0.3,
+      1,
+      p.ry === 0 ? 0.3 : WING_W
+    ), archMat);
+    hdr.position.set(p.nx, wh - 0.5, p.nz); scene.add(hdr);
+  });
+
+  // Wing entrance labels
+  const signOff = 0.06;
+  placeSign(0,  wh-1.8, -HL+signOff, 0,           "North Wing", "#8B4513");
+  placeSign(0,  wh-1.8,  HL-signOff, Math.PI,     "South Wing", "#2A1800");
+  placeSign(HL-signOff, wh-1.8, 0, -Math.PI/2,    "East Wing",  "#003355");
+  placeSign(-HL+signOff, wh-1.8, 0, Math.PI/2,    "West Wing",  "#004040");
+
+  // Pillars at wing/lobby junctions
+  [[HW,-HL],[-HW,-HL],[HW,HL],[-HW,HL],
+   [HL,-HW],[HL,HW],[-HL,-HW],[-HL,HW]].forEach(([px,pz]) => {
+    const pm = new THREE.Mesh(new THREE.BoxGeometry(0.5, wh, 0.5), pillarMat);
+    pm.position.set(px, wh/2, pz); pm.castShadow = true; scene.add(pm);
+  });
+
+  // Central light
+  const ll = new THREE.PointLight(0xfff0dd, 0.8, 18);
+  ll.position.set(0, LOBBY_H-0.5, 0); scene.add(ll);
+
+  // Hanging banner
+  placeBanner();
+}
+
+function placeSign(x,y,z,ry,text,bg) {
+  const tex = makeSignTexture(text, bg, 512, 80, 30);
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.5, 0.5),
+    new THREE.MeshStandardMaterial({ map:tex, roughness:0.7 })
+  );
+  m.position.set(x,y,z); m.rotation.y = ry; scene.add(m);
+}
+
+function placeBanner() {
+  const c = document.createElement('canvas');
+  c.width = 1024; c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#2a2218';
+  ctx.fillRect(0,0,1024,256);
+  ctx.strokeStyle = '#8B7355'; ctx.lineWidth = 4;
+  ctx.strokeRect(10,10,1004,236);
+  ctx.fillStyle = '#f0ece4'; ctx.font = '72px Georgia';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('The Barnworks Gallery', 512, 100);
+  ctx.fillStyle = '#8a7a6a'; ctx.font = '28px Georgia';
+  ctx.fillText('Handcrafted Art by P22', 512, 170);
+  const tex = new THREE.CanvasTexture(c);
+  const mat = new THREE.MeshStandardMaterial({ map:tex, roughness:0.7 });
+  const g   = new THREE.PlaneGeometry(6, 1.5);
+  const m1  = new THREE.Mesh(g, mat);
+  m1.position.set(0, 5.5, 0); scene.add(m1);
+  const m2  = new THREE.Mesh(g.clone(), mat);
+  m2.position.set(0, 5.5, 0); m2.rotation.y = Math.PI; scene.add(m2);
+}
+
+// ================================================================
+//  BUILD WING CORRIDORS
+// ================================================================
+
+/* Z-axis wing  dir: -1=north, +1=south */
+function buildZWing(dir, secA, secB) {
+  const zS = dir * HL;
+  const zE = dir * WE;
+  const cZ = zS + dir * WING_LEN/2;
+
+  // Floor & ceiling
+  addPlane(WING_W, WING_LEN, 0, 0, cZ, -Math.PI/2, 0, floorMat, true);
+  addPlane(WING_W, WING_LEN, 0, WING_H, cZ, Math.PI/2, 0, ceilMat, false);
+
+  // Side walls
+  addPlane(WING_LEN, WING_H, -HW, WING_H/2, cZ, 0, Math.PI/2, wallMat, true);
+  addPlane(WING_LEN, WING_H,  HW, WING_H/2, cZ, 0,-Math.PI/2, wallMat, true);
+
+  // End wall
+  addPlane(WING_W, WING_H, 0, WING_H/2, zE, 0, dir>0?Math.PI:0, wallMat, false);
+
+  // Baseboards & chair rails
+  addTrim(-HW+0.01, cZ, WING_LEN, Math.PI/2);
+  addTrim( HW-0.01, cZ, WING_LEN,-Math.PI/2);
+
+  // Section divider at midpoint
+  const midZ = zS + dir * SEC_LEN;
+  placeSectionSign(0, midZ, 0, secB);
+
+  // Entry sign
+  placeSectionSign(0, zS + dir*1.0, 0, secA);
+
+  // Lights
+  for (let i = 0; i < 4; i++) {
+    const pl = new THREE.PointLight(0xfff0dd, 0.7, 18);
+    pl.position.set(0, WING_H-0.3, zS + dir*(5.5 + i*11));
+    scene.add(pl);
+  }
+}
+
+/* X-axis wing  dir: +1=east, -1=west */
+function buildXWing(dir, secA, secB) {
+  const xS = dir * HL;
+  const xE = dir * WE;
+  const cX = xS + dir * WING_LEN/2;
+
+  // Floor & ceiling
+  addPlane(WING_LEN, WING_W, cX, 0, 0, -Math.PI/2, 0, floorMat, true);
+  addPlane(WING_LEN, WING_W, cX, WING_H, 0, Math.PI/2, 0, ceilMat, false);
+
+  // Side walls  (z = -HW faces +Z,  z = +HW faces -Z)
+  addPlane(WING_LEN, WING_H, cX, WING_H/2, -HW, 0, 0, wallMat, true);
+  addPlane(WING_LEN, WING_H, cX, WING_H/2,  HW, 0, Math.PI, wallMat, true);
+
+  // End wall
+  addPlane(WING_W, WING_H, xE, WING_H/2, 0, 0, dir>0?-Math.PI/2:Math.PI/2, wallMat, false);
+
+  // Baseboards
+  addTrimX(cX, -HW+0.01, WING_LEN, 0);
+  addTrimX(cX,  HW-0.01, WING_LEN, Math.PI);
+
+  // Section divider
+  const midX = xS + dir * SEC_LEN;
+  placeSectionSign(midX, 0, Math.PI/2, secB);
+
+  // Entry sign
+  placeSectionSign(xS + dir*1.0, 0, Math.PI/2, secA);
+
+  // Lights
+  for (let i = 0; i < 4; i++) {
+    const pl = new THREE.PointLight(0xfff0dd, 0.7, 18);
+    pl.position.set(xS + dir*(5.5+i*11), WING_H-0.3, 0);
+    scene.add(pl);
+  }
+}
+
+function addPlane(w, h, x, y, z, rx, ry, mat, shadow) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  m.position.set(x, y, z);
+  if (rx) m.rotation.x = rx;
+  if (ry) m.rotation.y = ry;
+  if (shadow) m.receiveShadow = true;
+  scene.add(m);
+}
+
+function addTrim(x, z, len, ry) {
+  // Baseboard
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(len, 0.15), baseMat);
+  b.position.set(x, 0.08, z); b.rotation.y = ry; scene.add(b);
+  // Chair rail
+  const r = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.04, len), railMat);
+  r.position.set(x, 1.6, z); scene.add(r);
+}
+
+function addTrimX(x, z, len, ry) {
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(len, 0.15), baseMat);
+  b.position.set(x, 0.08, z); b.rotation.y = ry; scene.add(b);
+  const r = new THREE.Mesh(new THREE.BoxGeometry(len, 0.04, 0.02), railMat);
+  r.position.set(x, 1.6, z); scene.add(r);
+}
+
+function placeSectionSign(x, z, ry, secDef) {
+  if (!secDef) return;
+  // Header beam
+  const hdr = new THREE.Mesh(new THREE.BoxGeometry(WING_W, 0.4, 0.3), archMat);
+  hdr.position.set(x, WING_H-0.2, z); hdr.rotation.y = ry; scene.add(hdr);
+  // Name plaque (both sides)
+  const tex = makeSignTexture(secDef.name, secDef.sign, 512, 64, 26);
+  const smat= new THREE.MeshStandardMaterial({ map:tex, roughness:0.7 });
+  [0, Math.PI].forEach(extra => {
+    const sm = new THREE.Mesh(new THREE.PlaneGeometry(3, 0.35), smat);
+    sm.position.set(x, WING_H-0.7, z); sm.rotation.y = ry + extra; scene.add(sm);
+  });
+}
+
+// ================================================================
+//  PAINTING PLACEMENT
+// ================================================================
+function makeCanvasTexture(art) {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = art.color;
+  ctx.fillRect(0,0,512,512);
+  // Texture noise
+  for (let i = 0; i < 800; i++) {
+    ctx.fillStyle = 'rgba(255,255,255,'+Math.random()*0.06+')';
+    ctx.fillRect(Math.random()*512, Math.random()*512, Math.random()*40+2, Math.random()*40+2);
+  }
+  // Title
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = '600 28px Georgia'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const words = art.title.split(' ');
+  let lines = [], cur = '';
+  words.forEach(w => {
+    const t = cur ? cur+' '+w : w;
+    if (ctx.measureText(t).width > 420) { lines.push(cur); cur = w; } else cur = t;
+  });
+  if (cur) lines.push(cur);
+  const lh = 36, sy = 256 - (lines.length-1)*lh/2;
+  lines.forEach((l,i) => ctx.fillText(l, 256, sy + i*lh));
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '18px Georgia';
+  ctx.fillText(art.medium||'', 256, sy + lines.length*lh + 20);
+  return new THREE.CanvasTexture(c);
+}
+
+function placePainting(art, x, y, z, ry) {
+  const group = new THREE.Group();
+  const tex = art.image ? new THREE.TextureLoader().load('images/'+art.image)
+                        : makeCanvasTexture(art);
+  const pm = new THREE.Mesh(
+    new THREE.PlaneGeometry(art.w, art.h),
+    new THREE.MeshStandardMaterial({ map:tex, roughness:0.5 })
+  );
+  pm.castShadow = true;
+  group.add(pm);
+
+  // Frame
+  const fd = 0.04, fw = 0.06;
+  const bar = (bw,bh,bd,bx,by,bz) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(bw,bh,bd), frameMat);
+    m.position.set(bx,by,bz); return m;
+  };
+  group.add(bar(art.w+fw*2, fw, fd, 0,  art.h/2+fw/2, fd/2));
+  group.add(bar(art.w+fw*2, fw, fd, 0, -art.h/2-fw/2, fd/2));
+  group.add(bar(fw, art.h, fd, -art.w/2-fw/2, 0, fd/2));
+  group.add(bar(fw, art.h, fd,  art.w/2+fw/2, 0, fd/2));
+
+  group.position.set(x, y, z);
+  group.rotation.y = ry;
+  scene.add(group);
+
+  // Spot light
+  const sl = new THREE.SpotLight(0xfff8ee, 1.0, 10, Math.PI/5, 0.4);
+  sl.position.set(x, WING_H - 0.3, z);
+  const target = new THREE.Object3D();
+  target.position.set(x, y, z);
+  scene.add(target);
+  sl.target = target;
+  scene.add(sl);
+
+  // Raycaster registration
+  pm.userData.artIndex = paintingData.length;
+  paintingMeshes.push(pm);
+  paintingData.push(art);
+}
+
+// ── Auto-layout engine ──
+function layoutZSection(dir, offset, arts) {
+  if (!arts.length) return;
+  const zBase = dir * HL + dir * offset;
+  const half  = Math.ceil(arts.length / 2);
+  const left  = arts.slice(0, half);
+  const right = arts.slice(half);
+  const artY  = 2.2;
+
+  left.forEach((a, i) => {
+    const sp = SEC_LEN / (left.length + 1);
+    placePainting(a, -HW+0.08, artY, zBase + dir*sp*(i+1), Math.PI/2);
+  });
+  right.forEach((a, i) => {
+    const sp = SEC_LEN / (right.length + 1);
+    placePainting(a, HW-0.08, artY, zBase + dir*sp*(i+1), -Math.PI/2);
+  });
+}
+
+function layoutXSection(dir, offset, arts) {
+  if (!arts.length) return;
+  const xBase = dir * HL + dir * offset;
+  const half  = Math.ceil(arts.length / 2);
+  const top   = arts.slice(0, half);
+  const bot   = arts.slice(half);
+  const artY  = 2.2;
+
+  top.forEach((a, i) => {
+    const sp = SEC_LEN / (top.length + 1);
+    placePainting(a, xBase + dir*sp*(i+1), artY, -HW+0.08, 0);
+  });
+  bot.forEach((a, i) => {
+    const sp = SEC_LEN / (bot.length + 1);
+    placePainting(a, xBase + dir*sp*(i+1), artY, HW-0.08, Math.PI);
+  });
+}
+
+// ================================================================
+//  ASSEMBLE THE MUSEUM
+// ================================================================
+buildLobby();
+buildZWing(-1, sections[0], sections[1]);   // North
+buildZWing( 1, sections[6], sections[7]);   // South
+buildXWing( 1, sections[2], sections[3]);   // East
+buildXWing(-1, sections[4], sections[5]);   // West
+
+// Place all paintings
+// North wing: sec 0 (first half), sec 1 (second half)
+layoutZSection(-1, 0,       artworks.filter(a => a.sec===0));
+layoutZSection(-1, SEC_LEN, artworks.filter(a => a.sec===1));
+// East wing
+layoutXSection( 1, 0,       artworks.filter(a => a.sec===2));
+layoutXSection( 1, SEC_LEN, artworks.filter(a => a.sec===3));
+// West wing
+layoutXSection(-1, 0,       artworks.filter(a => a.sec===4));
+layoutXSection(-1, SEC_LEN, artworks.filter(a => a.sec===5));
+// South wing
+layoutZSection( 1, 0,       artworks.filter(a => a.sec===6));
+layoutZSection( 1, SEC_LEN, artworks.filter(a => a.sec===7));
+
+// ================================================================
+//  COLLISION — cross-shaped valid area
+// ================================================================
+function isValid(x, z) {
+  if (Math.abs(x) < HL-MARGIN && Math.abs(z) < HL-MARGIN) return true;           // lobby
+  if (Math.abs(x) < HW-MARGIN && z < -(HL-MARGIN) && z > -(WE-MARGIN)) return true; // north
+  if (Math.abs(x) < HW-MARGIN && z >  (HL-MARGIN) && z <  (WE-MARGIN)) return true; // south
+  if (x >  (HL-MARGIN) && x <  (WE-MARGIN) && Math.abs(z) < HW-MARGIN) return true; // east
+  if (x < -(HL-MARGIN) && x > -(WE-MARGIN) && Math.abs(z) < HW-MARGIN) return true; // west
+  return false;
+}
+
+// ================================================================
+//  CONTROLS
+// ================================================================
+let yaw = Math.PI, pitch = 0;
+const keys = {};
+let locked = false, panelOpen = false;
+
+document.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Escape' && panelOpen) closePanel();
+  if (e.code === 'Escape' && contactOpen) closeContact();
+  if (e.code === 'KeyM') document.getElementById('nav-list').classList.toggle('show');
+});
+document.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// Pointer lock
+const cvs = renderer.domElement;
+document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('crosshair').style.display = 'block';
+  document.getElementById('hint').style.display = 'block';
+  document.getElementById('nav-menu').style.display = 'block';
+  document.getElementById('minimap').style.display = 'block';
+  document.getElementById('contact-btn').style.display = 'block';
+  cvs.requestPointerLock();
+});
+
+document.addEventListener('pointerlockchange', () => { locked = !!document.pointerLockElement; });
+
+document.addEventListener('mousemove', e => {
+  if (!locked) return;
+  yaw   -= e.movementX * 0.002;
+  pitch -= e.movementY * 0.002;
+  pitch  = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, pitch));
+});
+
+document.addEventListener('click', () => {
+  if (!locked) {
+    if (document.getElementById('overlay').style.display !== 'none') return;
+    cvs.requestPointerLock(); return;
+  }
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(paintingMeshes, true);
+  if (hits.length) {
+    const idx = hits[0].object.userData.artIndex;
+    if (idx !== undefined) openPanel(paintingData[idx]);
+  }
+});
+
+// ── Detail panel ──
+function openPanel(art) {
+  panelOpen = true;
+  const pc  = document.getElementById('panel-image');
+  pc.width  = 420; pc.height = 280;
+  const ctx = pc.getContext('2d');
+  if (art.image) {
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0, 420, 280);
+    img.src = 'images/' + art.image;
+  } else {
+    ctx.fillStyle = art.color; ctx.fillRect(0,0,420,280);
+    ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = '600 24px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText(art.title, 210, 130);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '16px Georgia';
+    ctx.fillText('Photo coming soon', 210, 165);
+  }
+  document.getElementById('panel-section-tag').textContent = sections[art.sec] ? sections[art.sec].name : '';
+  document.getElementById('panel-title').textContent       = art.title;
+  document.getElementById('panel-year').textContent        = art.year || '';
+  document.getElementById('panel-medium').textContent      = art.medium || '';
+  document.getElementById('panel-description').textContent = art.description;
+  document.getElementById('detail-panel').classList.add('open');
+  document.exitPointerLock();
+}
+
+function closePanel() {
+  panelOpen = false;
+  document.getElementById('detail-panel').classList.remove('open');
+  cvs.requestPointerLock();
+}
+document.getElementById('panel-close').addEventListener('click', closePanel);
+
+// ── Contact panel ──
+let contactOpen = false;
+document.getElementById('contact-btn').addEventListener('click', () => {
+  contactOpen = true;
+  document.getElementById('contact-panel').classList.add('open');
+  document.exitPointerLock();
+});
+function closeContact() {
+  contactOpen = false;
+  document.getElementById('contact-panel').classList.remove('open');
+  cvs.requestPointerLock();
+}
+document.getElementById('contact-close').addEventListener('click', closeContact);
+document.getElementById('contact-panel').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('contact-panel')) closeContact();
+});
+
+// ── Movement ──
+const SPEED = 5;
+function updateMove(dt) {
+  if (!locked || panelOpen || contactOpen) return;
+  const s  = SPEED * dt;
+  const fw = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
+  const rt = new THREE.Vector3(fw.z, 0, -fw.x);
+  let dx = 0, dz = 0;
+  if (keys['KeyW']||keys['ArrowUp'])    { dx += fw.x*s; dz += fw.z*s; }
+  if (keys['KeyS']||keys['ArrowDown'])  { dx -= fw.x*s; dz -= fw.z*s; }
+  if (keys['KeyA']||keys['ArrowLeft'])  { dx -= rt.x*s; dz -= rt.z*s; }
+  if (keys['KeyD']||keys['ArrowRight']) { dx += rt.x*s; dz += rt.z*s; }
+  const nx = camera.position.x + dx, nz = camera.position.z + dz;
+  if      (isValid(nx, nz))                 { camera.position.x = nx; camera.position.z = nz; }
+  else if (isValid(nx, camera.position.z))  { camera.position.x = nx; }
+  else if (isValid(camera.position.x, nz))  { camera.position.z = nz; }
+  camera.rotation.y = yaw;
+  camera.rotation.x = pitch;
+}
+
+// ── Hover ──
+function updateHover() {
+  if (!locked || panelOpen) { document.getElementById('interact-hint').style.opacity='0'; return; }
+  raycaster.setFromCamera(mouse, camera);
+  const h = raycaster.intersectObjects(paintingMeshes, true);
+  document.getElementById('interact-hint').style.opacity = (h.length && h[0].object.userData.artIndex !== undefined) ? '1' : '0';
+}
+
+// ================================================================
+//  NAV MENU
+// ================================================================
+(function() {
+  const list = document.getElementById('nav-list');
+  teleports.forEach((tp, i) => {
+    if (i===1||i===3||i===5||i===7) {
+      const d = document.createElement('div'); d.className='nav-divider'; list.appendChild(d);
+    }
+    const btn = document.createElement('button');
+    btn.className = 'nav-item'; btn.textContent = tp.label;
+    btn.addEventListener('click', () => {
+      camera.position.set(tp.x, EYE_H, tp.z);
+      yaw = tp.yaw; pitch = 0;
+      list.classList.remove('show');
+      cvs.requestPointerLock();
+    });
+    list.appendChild(btn);
+  });
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    list.classList.toggle('show');
+  });
+})();
+
+// ================================================================
+//  MINI-MAP
+// ================================================================
+function drawMinimap() {
+  const c = document.getElementById('minimap-canvas');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  const sc = W / (WE*2+10);
+  const cx = W/2, cy = H/2;
+  ctx.clearRect(0,0,W,H);
+
+  ctx.fillStyle = 'rgba(60,50,40,0.5)';
+  // Lobby
+  ctx.fillRect(cx-HL*sc, cy-HL*sc, LOBBY*sc, LOBBY*sc);
+  // Wings
+  ctx.fillRect(cx-HW*sc, cy-WE*sc, WING_W*sc, WING_LEN*sc);  // north
+  ctx.fillRect(cx-HW*sc, cy+HL*sc, WING_W*sc, WING_LEN*sc);  // south
+  ctx.fillRect(cx+HL*sc, cy-HW*sc, WING_LEN*sc, WING_W*sc);  // east
+  ctx.fillRect(cx-WE*sc, cy-HW*sc, WING_LEN*sc, WING_W*sc);  // west
+  // Borders
+  ctx.strokeStyle = 'rgba(139,115,85,0.5)'; ctx.lineWidth = 1;
+  ctx.strokeRect(cx-HL*sc, cy-HL*sc, LOBBY*sc, LOBBY*sc);
+  ctx.strokeRect(cx-HW*sc, cy-WE*sc, WING_W*sc, WING_LEN*sc);
+  ctx.strokeRect(cx-HW*sc, cy+HL*sc, WING_W*sc, WING_LEN*sc);
+  ctx.strokeRect(cx+HL*sc, cy-HW*sc, WING_LEN*sc, WING_W*sc);
+  ctx.strokeRect(cx-WE*sc, cy-HW*sc, WING_LEN*sc, WING_W*sc);
+  // Player
+  const px = cx + camera.position.x*sc;
+  const py = cy + camera.position.z*sc;
+  ctx.fillStyle = '#ff6633';
+  ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2); ctx.fill();
+  // Direction
+  ctx.strokeStyle = '#ff6633'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(px,py);
+  ctx.lineTo(px - Math.sin(yaw)*8, py - Math.cos(yaw)*8);
+  ctx.stroke();
+}
+
+// ================================================================
+//  RENDER LOOP
+// ================================================================
+const clock = new THREE.Clock();
+(function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  updateMove(dt);
+  updateHover();
+  drawMinimap();
+  renderer.render(scene, camera);
+})();
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
