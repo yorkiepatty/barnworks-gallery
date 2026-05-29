@@ -137,6 +137,41 @@
       border-radius: 6px; display: none; overflow: hidden;
     }
 
+    /* ── On-screen controls ── */
+    #touch-controls {
+      position: fixed; bottom: 20px; left: 20px; z-index: 8;
+      display: none;
+    }
+    .ctrl-row { display: flex; justify-content: center; gap: 4px; }
+    .ctrl-row + .ctrl-row { margin-top: 4px; }
+    .ctrl-btn {
+      width: 52px; height: 52px; border-radius: 10px;
+      background: rgba(240,236,228,0.18); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      user-select: none; -webkit-user-select: none;
+      touch-action: none;
+      backdrop-filter: blur(4px);
+    }
+    .ctrl-btn:active, .ctrl-btn.pressed { background: rgba(240,236,228,0.35); }
+    @media (min-width: 900px) {
+      #touch-controls { display: none !important; }
+    }
+
+    /* ── Auto-tour button (in-gallery) ── */
+    #tour-toggle {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 8; display: none;
+      background: rgba(10,8,6,0.7); color: #e0d8cc;
+      border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+      padding: 8px 20px; font-family: 'Georgia', serif;
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 20px;
+    }
+    #tour-toggle:hover { background: rgba(30,25,20,0.85); }
+    #tour-toggle.active { background: rgba(180,140,60,0.4); border-color: rgba(180,140,60,0.5); }
+
     /* ── Contact button ── */
     #contact-btn {
       position: fixed; top: 14px; right: 14px; z-index: 8;
@@ -201,11 +236,17 @@
     <h1>The Barnworks Gallery</h1>
     <div id="overlay-sub">Handcrafted Art by P22</div>
     <p>
-      <strong>WASD</strong> to walk &nbsp;&middot;&nbsp; <strong>Mouse</strong> to look<br>
-      <strong>Click</strong> any artwork for details<br>
-      <strong>M</strong> for gallery map &nbsp;&middot;&nbsp; <strong>ESC</strong> to close panels
+      <strong>Tap or click</strong> any artwork for details<br>
+      <strong>Drag</strong> or <strong>swipe</strong> to look around<br>
+      Use the <strong>on-screen buttons</strong> or <strong>WASD</strong> to walk
     </p>
     <button id="start-btn">Enter Gallery</button>
+    <div style="margin-top:14px;">
+      <button id="auto-tour-btn" style="padding:10px 30px; background:none; color:#8a7a6a;
+        border:1px solid #8a7a6a; cursor:pointer; font-size:0.8rem;
+        font-family:'Georgia',serif; letter-spacing:0.12em; text-transform:uppercase;
+        border-radius:4px;">&#9654; Auto Tour</button>
+    </div>
     <div style="margin-top:22px;">
       <a href="mailto:yorkiepimp@gmail.com?subject=Barnworks%20Gallery%20Inquiry"
          style="color:#8a7a6a; font-size:0.78rem; letter-spacing:0.1em; text-decoration:none;">
@@ -216,7 +257,7 @@
 </div>
 
 <div id="crosshair"></div>
-<div id="hint">WASD to move &middot; Mouse to look &middot; Click artwork for details &middot; M for map</div>
+<div id="hint">Drag to look around &middot; Tap artwork for details &middot; Use arrows or WASD to walk</div>
 <div id="interact-hint">Click to view details</div>
 
 <!-- Detail panel -->
@@ -238,6 +279,21 @@
   <button id="nav-toggle">&#9776; Gallery Map</button>
   <div id="nav-list"></div>
 </div>
+
+<!-- On-screen movement controls (mobile/touch) -->
+<div id="touch-controls">
+  <div class="ctrl-row">
+    <button class="ctrl-btn" data-dir="fwd">&#9650;</button>
+  </div>
+  <div class="ctrl-row">
+    <button class="ctrl-btn" data-dir="left">&#9664;</button>
+    <button class="ctrl-btn" data-dir="back">&#9660;</button>
+    <button class="ctrl-btn" data-dir="right">&#9654;</button>
+  </div>
+</div>
+
+<!-- Auto-tour toggle (in gallery) -->
+<button id="tour-toggle">&#9654; Auto Tour</button>
 
 <!-- Contact button -->
 <button id="contact-btn">&#9993; Contact</button>
@@ -1000,52 +1056,110 @@ function isValid(x, z) {
 }
 
 // ================================================================
-//  CONTROLS
+//  CONTROLS — works on desktop, laptop, phone & tablet
 // ================================================================
 let yaw = Math.PI, pitch = 0;
 const keys = {};
-let locked = false, panelOpen = false;
+let panelOpen = false;
+let galleryStarted = false;
+const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || ('ontouchstart' in window && innerWidth < 900);
 
 document.addEventListener('keydown', e => {
   keys[e.code] = true;
   if (e.code === 'Escape' && panelOpen) closePanel();
   if (e.code === 'Escape' && contactOpen) closeContact();
+  if (e.code === 'Escape' && autoTour) stopAutoTour();
   if (e.code === 'KeyM') document.getElementById('nav-list').classList.toggle('show');
 });
 document.addEventListener('keyup', e => { keys[e.code] = false; });
 
-// Pointer lock
+// ── Enter gallery ──
 const cvs = renderer.domElement;
-document.getElementById('start-btn').addEventListener('click', () => {
+function enterGallery() {
+  galleryStarted = true;
   document.getElementById('overlay').style.display = 'none';
-  document.getElementById('crosshair').style.display = 'block';
+  document.getElementById('crosshair').style.display = isMobile ? 'none' : 'block';
   document.getElementById('hint').style.display = 'block';
   document.getElementById('nav-menu').style.display = 'block';
-  document.getElementById('minimap').style.display = 'block';
+  document.getElementById('minimap').style.display = isMobile ? 'none' : 'block';
   document.getElementById('contact-btn').style.display = 'block';
-  cvs.requestPointerLock();
+  document.getElementById('tour-toggle').style.display = 'block';
+  if (isMobile) document.getElementById('touch-controls').style.display = 'block';
+}
+document.getElementById('start-btn').addEventListener('click', enterGallery);
+document.getElementById('auto-tour-btn').addEventListener('click', () => {
+  enterGallery();
+  startAutoTour();
 });
 
-document.addEventListener('pointerlockchange', () => { locked = !!document.pointerLockElement; });
-
-document.addEventListener('mousemove', e => {
-  if (!locked) return;
-  yaw   -= e.movementX * 0.002;
-  pitch -= e.movementY * 0.002;
+// ── Mouse drag to look (NO pointer lock needed) ──
+let dragging = false, dragStartX = 0, dragStartY = 0, dragMoved = false;
+cvs.addEventListener('mousedown', e => {
+  if (!galleryStarted || panelOpen || contactOpen) return;
+  dragging = true; dragStartX = e.clientX; dragStartY = e.clientY; dragMoved = false;
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const dx = e.clientX - dragStartX, dy = e.clientY - dragStartY;
+  if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragMoved = true;
+  yaw   -= dx * 0.003;
+  pitch -= dy * 0.003;
   pitch  = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, pitch));
+  dragStartX = e.clientX; dragStartY = e.clientY;
+});
+window.addEventListener('mouseup', () => { dragging = false; });
+
+// ── Touch to look (swipe) ──
+let touchId = null, touchX = 0, touchY = 0, touchMoved = false;
+cvs.addEventListener('touchstart', e => {
+  if (!galleryStarted || panelOpen || contactOpen) return;
+  if (touchId !== null) return;
+  const t = e.changedTouches[0];
+  touchId = t.identifier; touchX = t.clientX; touchY = t.clientY; touchMoved = false;
+}, {passive: true});
+window.addEventListener('touchmove', e => {
+  for (let t of e.changedTouches) {
+    if (t.identifier === touchId) {
+      const dx = t.clientX - touchX, dy = t.clientY - touchY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) touchMoved = true;
+      yaw   -= dx * 0.004;
+      pitch -= dy * 0.004;
+      pitch  = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, pitch));
+      touchX = t.clientX; touchY = t.clientY;
+    }
+  }
+}, {passive: true});
+window.addEventListener('touchend', e => {
+  for (let t of e.changedTouches) {
+    if (t.identifier === touchId) touchId = null;
+  }
 });
 
-document.addEventListener('click', () => {
-  if (!locked) {
-    if (document.getElementById('overlay').style.display !== 'none') return;
-    cvs.requestPointerLock(); return;
-  }
-  raycaster.setFromCamera(mouse, camera);
+// ── Click/tap on artwork ──
+function tryClickArt(clientX, clientY) {
+  const rect = cvs.getBoundingClientRect();
+  const mx = ((clientX - rect.left) / rect.width) * 2 - 1;
+  const my = -((clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(new THREE.Vector2(mx, my), camera);
   const hits = raycaster.intersectObjects(paintingMeshes, true);
   if (hits.length) {
     const idx = hits[0].object.userData.artIndex;
-    if (idx !== undefined) openPanel(paintingData[idx]);
+    if (idx !== undefined) { openPanel(paintingData[idx]); return true; }
   }
+  return false;
+}
+
+cvs.addEventListener('click', e => {
+  if (!galleryStarted || panelOpen || contactOpen) return;
+  if (dragMoved) return;  // was a drag, not a click
+  tryClickArt(e.clientX, e.clientY);
+});
+
+cvs.addEventListener('touchend', e => {
+  if (!galleryStarted || panelOpen || contactOpen) return;
+  if (touchMoved) return;
+  const t = e.changedTouches[0];
+  tryClickArt(t.clientX, t.clientY);
 });
 
 // ── Detail panel ──
@@ -1072,13 +1186,11 @@ function openPanel(art) {
   document.getElementById('panel-medium').textContent      = art.medium || '';
   document.getElementById('panel-description').textContent = art.description;
   document.getElementById('detail-panel').classList.add('open');
-  document.exitPointerLock();
 }
 
 function closePanel() {
   panelOpen = false;
   document.getElementById('detail-panel').classList.remove('open');
-  cvs.requestPointerLock();
 }
 document.getElementById('panel-close').addEventListener('click', closePanel);
 
@@ -1087,41 +1199,137 @@ let contactOpen = false;
 document.getElementById('contact-btn').addEventListener('click', () => {
   contactOpen = true;
   document.getElementById('contact-panel').classList.add('open');
-  document.exitPointerLock();
 });
 function closeContact() {
   contactOpen = false;
   document.getElementById('contact-panel').classList.remove('open');
-  cvs.requestPointerLock();
 }
 document.getElementById('contact-close').addEventListener('click', closeContact);
 document.getElementById('contact-panel').addEventListener('click', (e) => {
   if (e.target === document.getElementById('contact-panel')) closeContact();
 });
 
+// ── On-screen button controls (mobile) ──
+const touchDirs = { fwd:false, back:false, left:false, right:false };
+document.querySelectorAll('.ctrl-btn').forEach(btn => {
+  const dir = btn.dataset.dir;
+  const start = () => { touchDirs[dir] = true; btn.classList.add('pressed'); };
+  const stop  = () => { touchDirs[dir] = false; btn.classList.remove('pressed'); };
+  btn.addEventListener('touchstart', e => { e.preventDefault(); start(); });
+  btn.addEventListener('touchend',   e => { e.preventDefault(); stop(); });
+  btn.addEventListener('touchcancel', stop);
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('mouseup', stop);
+  btn.addEventListener('mouseleave', stop);
+});
+
+// ── Auto-tour ──
+let autoTour = false;
+const tourWaypoints = [
+  // Lobby start
+  { x:0, z:5, yaw:Math.PI },
+  // North wing - chainsaw carvings
+  { x:0, z:-8, yaw:Math.PI },
+  { x:0, z:-20, yaw:Math.PI+0.3 },
+  { x:0, z:-30, yaw:Math.PI-0.3 },
+  { x:0, z:-45, yaw:Math.PI },
+  // Back to lobby, turn east
+  { x:0, z:-5, yaw:Math.PI },
+  { x:0, z:0, yaw:-Math.PI/2 },
+  // East wing - airbrush
+  { x:8, z:0, yaw:-Math.PI/2 },
+  { x:20, z:0, yaw:-Math.PI/2+0.3 },
+  { x:32, z:0, yaw:-Math.PI/2-0.3 },
+  { x:45, z:0, yaw:-Math.PI/2 },
+  // Back to lobby, turn south
+  { x:5, z:0, yaw:-Math.PI/2 },
+  { x:0, z:0, yaw:0 },
+  // South wing - dream catchers & jewelry
+  { x:0, z:10, yaw:0 },
+  { x:0, z:22, yaw:0.3 },
+  { x:0, z:34, yaw:-0.3 },
+  { x:0, z:45, yaw:0 },
+  // Back to lobby, turn west
+  { x:0, z:5, yaw:0 },
+  { x:0, z:0, yaw:Math.PI/2 },
+  // West wing - resin & mixed media
+  { x:-8, z:0, yaw:Math.PI/2 },
+  { x:-20, z:0, yaw:Math.PI/2+0.3 },
+  { x:-32, z:0, yaw:Math.PI/2-0.3 },
+  { x:-45, z:0, yaw:Math.PI/2 },
+  // Return to lobby center
+  { x:-5, z:0, yaw:Math.PI/2 },
+  { x:0, z:0, yaw:Math.PI },
+];
+let tourIndex = 0, tourT = 0;
+const TOUR_SPEED = 0.35;
+
+function startAutoTour() {
+  autoTour = true; tourIndex = 0; tourT = 0;
+  document.getElementById('tour-toggle').classList.add('active');
+  document.getElementById('tour-toggle').innerHTML = '&#9724; Stop Tour';
+}
+function stopAutoTour() {
+  autoTour = false;
+  document.getElementById('tour-toggle').classList.remove('active');
+  document.getElementById('tour-toggle').innerHTML = '&#9654; Auto Tour';
+}
+document.getElementById('tour-toggle').addEventListener('click', () => {
+  if (autoTour) stopAutoTour(); else startAutoTour();
+});
+
+function updateAutoTour(dt) {
+  if (!autoTour || panelOpen || contactOpen) return;
+  if (tourIndex >= tourWaypoints.length - 1) {
+    // Loop back to start
+    tourIndex = 0; tourT = 0;
+  }
+  const from = tourWaypoints[tourIndex];
+  const to   = tourWaypoints[tourIndex + 1];
+  tourT += dt * TOUR_SPEED;
+  if (tourT >= 1) { tourT = 0; tourIndex++; return; }
+  // Smooth interpolation
+  const t = tourT * tourT * (3 - 2 * tourT); // smoothstep
+  camera.position.x = from.x + (to.x - from.x) * t;
+  camera.position.z = from.z + (to.z - from.z) * t;
+  // Shortest-path yaw interpolation
+  let dy = to.yaw - from.yaw;
+  while (dy > Math.PI) dy -= Math.PI*2;
+  while (dy < -Math.PI) dy += Math.PI*2;
+  yaw = from.yaw + dy * t;
+  pitch = 0;
+}
+
 // ── Movement ──
 const SPEED = 5;
 function updateMove(dt) {
-  if (!locked || panelOpen || contactOpen) return;
+  if (panelOpen || contactOpen) return;
+  // Auto-tour takes priority
+  if (autoTour) { updateAutoTour(dt); camera.rotation.y = yaw; camera.rotation.x = pitch; return; }
+  // Keyboard OR touch buttons
   const s  = SPEED * dt;
   const fw = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
   const rt = new THREE.Vector3(fw.z, 0, -fw.x);
   let dx = 0, dz = 0;
-  if (keys['KeyW']||keys['ArrowUp'])    { dx += fw.x*s; dz += fw.z*s; }
-  if (keys['KeyS']||keys['ArrowDown'])  { dx -= fw.x*s; dz -= fw.z*s; }
-  if (keys['KeyA']||keys['ArrowLeft'])  { dx -= rt.x*s; dz -= rt.z*s; }
-  if (keys['KeyD']||keys['ArrowRight']) { dx += rt.x*s; dz += rt.z*s; }
-  const nx = camera.position.x + dx, nz = camera.position.z + dz;
-  if      (isValid(nx, nz))                 { camera.position.x = nx; camera.position.z = nz; }
-  else if (isValid(nx, camera.position.z))  { camera.position.x = nx; }
-  else if (isValid(camera.position.x, nz))  { camera.position.z = nz; }
+  if (keys['KeyW']||keys['ArrowUp']||touchDirs.fwd)      { dx += fw.x*s; dz += fw.z*s; }
+  if (keys['KeyS']||keys['ArrowDown']||touchDirs.back)    { dx -= fw.x*s; dz -= fw.z*s; }
+  if (keys['KeyA']||keys['ArrowLeft']||touchDirs.left)    { yaw += 1.5*dt; }
+  if (keys['KeyD']||keys['ArrowRight']||touchDirs.right)  { yaw -= 1.5*dt; }
+  if (dx || dz) {
+    // Any manual movement stops auto-tour
+    if (autoTour) stopAutoTour();
+    const nx = camera.position.x + dx, nz = camera.position.z + dz;
+    if      (isValid(nx, nz))                 { camera.position.x = nx; camera.position.z = nz; }
+    else if (isValid(nx, camera.position.z))  { camera.position.x = nx; }
+    else if (isValid(camera.position.x, nz))  { camera.position.z = nz; }
+  }
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
 }
 
-// ── Hover ──
+// ── Hover (desktop only) ──
 function updateHover() {
-  if (!locked || panelOpen) { document.getElementById('interact-hint').style.opacity='0'; return; }
+  if (panelOpen || isMobile) { document.getElementById('interact-hint').style.opacity='0'; return; }
   raycaster.setFromCamera(mouse, camera);
   const h = raycaster.intersectObjects(paintingMeshes, true);
   document.getElementById('interact-hint').style.opacity = (h.length && h[0].object.userData.artIndex !== undefined) ? '1' : '0';
@@ -1142,7 +1350,7 @@ function updateHover() {
       camera.position.set(tp.x, EYE_H, tp.z);
       yaw = tp.yaw; pitch = 0;
       list.classList.remove('show');
-      cvs.requestPointerLock();
+      if (autoTour) stopAutoTour();
     });
     list.appendChild(btn);
   });
