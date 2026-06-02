@@ -684,7 +684,7 @@ renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 // Ambient
-scene.add(new THREE.AmbientLight(0xfff8f0, 0.45));
+scene.add(new THREE.AmbientLight(0xfff8f0, 0.85));
 
 // ── Shared materials ──
 const floorMat  = new THREE.MeshStandardMaterial({ color:0x2a2218, roughness:0.9  });
@@ -987,15 +987,6 @@ function placePainting(art, x, y, z, ry) {
   group.position.set(x, y, z);
   group.rotation.y = ry;
   scene.add(group);
-
-  // Spot light
-  const sl = new THREE.SpotLight(0xfff8ee, 1.0, 10, Math.PI/5, 0.4);
-  sl.position.set(x, WING_H - 0.3, z);
-  const target = new THREE.Object3D();
-  target.position.set(x, y, z);
-  scene.add(target);
-  sl.target = target;
-  scene.add(sl);
 
   // Raycaster registration
   pm.userData.artIndex = paintingData.length;
