@@ -679,8 +679,7 @@ camera.rotation.order = 'YXZ';
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled = false;
 document.body.appendChild(renderer.domElement);
 
 // Ambient
@@ -728,7 +727,7 @@ function makeSignTexture(text, bgColor, w, h, fontSize) {
 function buildLobby() {
   // Floor
   const f = new THREE.Mesh(new THREE.PlaneGeometry(LOBBY, LOBBY), lobbyFlr);
-  f.rotation.x = -Math.PI/2; f.receiveShadow = true;
+  f.rotation.x = -Math.PI/2;
   scene.add(f);
   // Ceiling
   const c = new THREE.Mesh(new THREE.PlaneGeometry(LOBBY, LOBBY), ceilMat);
@@ -749,11 +748,11 @@ function buildLobby() {
     // Left slab
     const lm = new THREE.Mesh(new THREE.PlaneGeometry(sideW, wh), lobbyWall);
     lm.position.set(p.left[0], wh/2, p.left[2]);
-    lm.rotation.y = p.ry; lm.receiveShadow = true; scene.add(lm);
+    lm.rotation.y = p.ry;scene.add(lm);
     // Right slab
     const rm = new THREE.Mesh(new THREE.PlaneGeometry(sideW, wh), lobbyWall);
     rm.position.set(p.right[0], wh/2, p.right[2]);
-    rm.rotation.y = p.ry; rm.receiveShadow = true; scene.add(rm);
+    rm.rotation.y = p.ry;scene.add(rm);
     // Arch header
     const hdr = new THREE.Mesh(new THREE.BoxGeometry(
       p.ry === 0 ? WING_W : 0.3,
@@ -774,7 +773,7 @@ function buildLobby() {
   [[HW,-HL],[-HW,-HL],[HW,HL],[-HW,HL],
    [HL,-HW],[HL,HW],[-HL,-HW],[-HL,HW]].forEach(([px,pz]) => {
     const pm = new THREE.Mesh(new THREE.BoxGeometry(0.5, wh, 0.5), pillarMat);
-    pm.position.set(px, wh/2, pz); pm.castShadow = true; scene.add(pm);
+    pm.position.set(px, wh/2, pz); scene.add(pm);
   });
 
   // Central light
@@ -897,7 +896,6 @@ function addPlane(w, h, x, y, z, rx, ry, mat, shadow) {
   m.position.set(x, y, z);
   if (rx) m.rotation.x = rx;
   if (ry) m.rotation.y = ry;
-  if (shadow) m.receiveShadow = true;
   scene.add(m);
 }
 
@@ -970,7 +968,7 @@ function placePainting(art, x, y, z, ry) {
     new THREE.PlaneGeometry(art.w, art.h),
     new THREE.MeshStandardMaterial({ map:tex, roughness:0.5 })
   );
-  pm.castShadow = true;
+ 
   group.add(pm);
 
   // Frame
